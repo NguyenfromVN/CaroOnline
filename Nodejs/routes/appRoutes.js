@@ -26,14 +26,13 @@ module.exports = function (app, passport) {
   });
 
   // board Routes
-  app.use("/board", protectedRoutes);
+  app.use("/", protectedRoutes);
 
   protectedRoutes.get("/", controller.get_all_boards);
   protectedRoutes.get("/:boardId", controller.get_board_by_id);
   protectedRoutes.get("/:boardId/join", controller.get_board_by_id);
   protectedRoutes.get("/:boardId/start", controller.start_board);
   protectedRoutes.get("/:boardId/end", controller.end_board);
-  protectedRoutes.post("/" ,controller.add_board);
 
   // user Routes
   app.route("/login").post(controller.get_user_by_credential);
