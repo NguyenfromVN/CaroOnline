@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Avatar, Button, CssBaseline, TextField, Typography, makeStyles, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import axios from 'axios';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -28,15 +29,14 @@ export default function Login(props) {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const isAuth = localStorage.getItem("isAuth");
+    const token = localStorage.getItem("token");
     const history = useHistory();
 
-    // useEffect(() => {
-    //     console.log(isAuth);
-    //     if (isAuth === "true") {
-    //         history.push('/');
-    //     }
-    // }, [])
+    useEffect(() => {
+        if (token !== "") {
+            history.push('/');
+        }
+    }, [])
 
     const handleUsernameChange = (e) => {
         setUsername(e.target.value);
@@ -46,9 +46,20 @@ export default function Login(props) {
         setPassword(e.target.value);
     }
 
-    function handleSubmit(e) {
-        localStorage.setItem("isAuth", true);
-        localStorage.setItem("username", username);
+    const handleSubmit = async (e) => {
+        try {
+            axios.post('http://localhost:3001/login', {
+                username: username,
+                password: password
+            }).then(function (response) {
+                const data = response.data;
+                localStorage.setItem("token", data.token);
+                console.log(localStorage.getItem("token"));
+            })
+        } catch (error) {
+            console.log('Failed to fetch product list: ', error);
+        }
+
         history.push('/');
         e.preventDefault();
     }
