@@ -2,8 +2,6 @@ let mongoose = require("mongoose");
 
 const server = `mongodb+srv://bindzo:binbin@cluster0.kpwkn.mongodb.net/caroonline?retryWrites=true&w=majority
 `; // REPLACE WITH YOUR DB SERVER
-const database = "caroonline"; // REPLACE WITH YOUR DB NAME
-const atlas = process.env.DATABASE_URL;
 
 const connectionParams = {
   useNewUrlParser: true,
@@ -16,6 +14,7 @@ class Database {
   }
   _connect() {
     mongoose
+    //Kết nối với db, nếu Back-end đang trên host sẽ chọn đường dẫn process.env.DATABASE_URL
       .connect(process.env.DATABASE_URL || server, connectionParams)
       .then(() => {
         console.log("Database connection successful");
