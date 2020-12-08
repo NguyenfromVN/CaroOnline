@@ -16,13 +16,13 @@ let userSchema = new mongoose.Schema({
 // Tạo model
 let UserModel = mongoose.model("User", userSchema);
 
-class User {
-  getModel = () => {
+function User() {
+  this.getModel = () => {
     return UserModel;
   };
 
   //Chức năng login
-  getUserByCredential = function (credential, result) {
+  this.getUserByCredential = function (credential, result) {
     UserModel.find(
       {
         username: credential.username, // search query
@@ -40,7 +40,7 @@ class User {
   };
 
   // Chức năng Register
-  addUserByCredential = function (credential, result) {
+  this.addUserByCredential = function (credential, result) {
     UserModel.create(
       { ...credential, status: "offline", elo: 0, board: "" },
       function (err, res) {
@@ -51,7 +51,7 @@ class User {
   };
 
   // Chức năng join vào 1 board
-  addBoardToUser = function (boardId, user) {
+  this.addBoardToUser = function (boardId, user) {
     UserModel.updateOne(
       { username: user.username },
       { board: boardId, status: "in-game" },

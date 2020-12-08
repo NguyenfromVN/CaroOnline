@@ -17,10 +17,10 @@ let boardSchema = new mongoose.Schema({
 //Tạo model
 let BoardModel = mongoose.model("Board", boardSchema);
 
-class Board {
+function Board() {
 
   // Chức năng xem 1 board với id
-  getBoardById = function (boardId, result) {
+  this.getBoardById = function (boardId, result) {
     BoardModel.find({
       id: boardId, // search query
     })
@@ -33,7 +33,7 @@ class Board {
   };
 
   // Chức năng xem tất cả các board
-  getAllBoards = function (result) {
+  this.getAllBoards = function (result) {
     BoardModel.find()
       .then((res) => {
         result(null, res);
@@ -44,7 +44,7 @@ class Board {
   };
 
   // Chức năng thêm board mới
-  addBoard = function (user, form, result) {
+  this.addBoard = function (user, form, result) {
     const data = {
       ...form,
       status: "open",
@@ -61,7 +61,7 @@ class Board {
   };
 
   //Khi 1 người dùng khác join vào board
-  joinBoard = function (user, form, result) {
+  this.joinBoard = function (user, form, result) {
     const data = {
       ...form,
       status: "open",
@@ -76,7 +76,7 @@ class Board {
   };
 
   // Bắt đầu game
-  startBoard = (id,result) => {
+  this.startBoard = (id,result) => {
     BoardModel.updateOne(
       {id},
       {status: "play"},
@@ -88,7 +88,7 @@ class Board {
   }
 
   // Kết thúc game
-  endBoard  = (id,result) => {
+  this.endBoard  = (id,result) => {
     BoardModel.updateOne(
       {id},
       {status: "end"},
