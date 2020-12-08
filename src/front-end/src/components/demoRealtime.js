@@ -10,7 +10,7 @@ const ws = (() => {
     // public
     function createConnection(userId, callback) {
         destroyConnection();
-        ws = new WebSocket("ws://localhost:3008?userId=" + userId);
+        ws = new WebSocket("ws://localhost:3001?userId=" + userId);
         ws.addEventListener("message", ({ data: message }) => {
             let topicName = message.split(">>>")[0];
             if (lazyUpdate[topicName] > 0)
@@ -40,7 +40,7 @@ const ws = (() => {
 
 // API
 async function getActiveUsers() {
-    let response = await fetch('http://localhost:3008/active-users');
+    let response = await fetch('http://localhost:3001/active-users');
     response = await response.json();
     return response;
 }
