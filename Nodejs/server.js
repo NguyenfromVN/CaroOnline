@@ -7,7 +7,6 @@ const passport = require("passport");
 port = process.env.PORT || 3001;
 const session = require("express-session");
 
-
 app.use(
   session({
     secret: "123",

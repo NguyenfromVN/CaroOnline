@@ -23,19 +23,18 @@ class User {
 
   //Chức năng login
   getUserByCredential = function (credential, result) {
-    UserModel.updateOne(
+    UserModel.find(
       {
         username: credential.username, // search query
         password: credential.password,
-      },
-      { status: "online" }
+      }
     )
       .then((res) => {
-        console.log(res);
+        console.log(res, "res");
         result(null, res);
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err, "err");
         result(null, err);
       });
   };

@@ -14,13 +14,13 @@ class Database {
   }
   _connect() {
     mongoose
-    //Kết nối với db, nếu Back-end đang trên host sẽ chọn đường dẫn process.env.DATABASE_URL
+      //Kết nối với db, nếu Back-end đang trên host sẽ chọn đường dẫn process.env.DATABASE_URL
       .connect(process.env.DATABASE_URL || server, connectionParams)
       .then(() => {
         console.log("Database connection successful");
       })
       .catch((err) => {
-        console.error("Database connection error");
+        console.error("Database connection error", err);
       });
   }
 }
