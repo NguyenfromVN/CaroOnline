@@ -19,6 +19,7 @@
     "mongoose": "^5.10.11",
     "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
-    "validator": "^13.1.17"
+    "validator": "^13.1.17",
+    "ws": "^7.4.1"
   }
 }
