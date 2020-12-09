@@ -52,15 +52,24 @@ export default function Login(props) {
                 username: username,
                 password: password
             }).then(function (response) {
-                const data = response.data;
-                localStorage.setItem("token", data.token);
-                console.log(localStorage.getItem("token"));
+                if (response.status === 200) {
+                    const data = response.data;
+                    localStorage.setItem("token", data.token);
+                    console.log(localStorage.getItem("token"));
+                    alert('Successfully loged in. Welcome to Home!');
+                    history.push('/');
+                } else {
+                    alert('Username or password is not correct. Please try again!');
+                    history.push('/signin');
+                }
             })
         } catch (error) {
+            alert('Username or password is not correct. Please try again!');
+            history.push('/signin');
             console.log('Failed to fetch product list: ', error);
         }
 
-        history.push('/');
+
         e.preventDefault();
     }
 
