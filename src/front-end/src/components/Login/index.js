@@ -33,7 +33,7 @@ export default function Login(props) {
     const history = useHistory();
 
     useEffect(() => {
-        if (token !== "") {
+        if (token) { // TODO
             history.push('/');
         }
     }, [])
@@ -47,8 +47,10 @@ export default function Login(props) {
     }
 
     const handleSubmit = async (e) => {
+        e.preventDefault();
+
         try {
-            axios.post('http://localhost:3001/login', {
+            await axios.post('http://localhost:3001/login', {
                 username: username,
                 password: password
             }).then(function (response) {
@@ -58,9 +60,6 @@ export default function Login(props) {
                     console.log(localStorage.getItem("token"));
                     alert('Successfully loged in. Welcome to Home!');
                     history.push('/');
-                } else {
-                    alert('Username or password is not correct. Please try again!');
-                    history.push('/signin');
                 }
             })
         } catch (error) {
@@ -68,9 +67,6 @@ export default function Login(props) {
             history.push('/signin');
             console.log('Failed to fetch product list: ', error);
         }
-
-
-        e.preventDefault();
     }
 
     return (

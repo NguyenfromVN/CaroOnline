@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 // WEBSOCKET CLIENT SIDE
 const ws = (() => {
@@ -61,8 +62,17 @@ function refreshConnection(e, userId, setActiveUsers) {
 export default function DemoRealtime(props) {
     const [activeUsers, setActiveUsers] = useState([]);
     const [userId, setUserId] = useState('');
+    const history = useHistory();
 
     useEffect(() => {
+        const token = localStorage.getItem("token");
+         
+        // if the user is not authorized, redirect to login page
+        if (!token) { // TODO
+            history.push('/signin');
+            return;
+        }
+
         (async () => {
             // load list of active users
             let activeUsers = await getActiveUsers();
