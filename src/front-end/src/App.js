@@ -50,6 +50,16 @@ function App() {
     const classes = useStyles();
     const [loginStatus, setLoginStatus] = useState(false);
 
+    const username = localStorage.getItem("username");
+    // const token = localStorage.getItem("token");
+    localStorage.setItem("loginStatus", loginStatus);
+
+    // if (token) {
+    //     setLoginStatus(true);
+    // } else {
+    //     setLoginStatus(false);
+    // }
+
     const handleChangeLoginStatus = () => {
         setLoginStatus(!loginStatus);
     }
@@ -105,7 +115,7 @@ function App() {
                                         to={`/profile`}
                                         className={classes.link}>
                                         <AccountIcon className={classes.iconForBreadSrum} />
-                                        {/* Hi, {name} */}
+                                        Hi, {username}
                                     </NavLink> : null}
                                 {loginStatus ?
                                     <NavLink
@@ -126,7 +136,7 @@ function App() {
                     </AppBar>
                     <main>
                         <Switch>
-                            <Route path='/signin' exact component={Login} />
+                            <Route path='/signin' exact component={() => (<Login handleChangeLoginStatus={handleChangeLoginStatus} />)} />
                             <Route path='/register' exact component={Register} />
                             <Route path='/home' exact component={Home} />
                             {/* '/' will be directed to demo realtime component */}

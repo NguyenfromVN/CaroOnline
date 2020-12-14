@@ -1,7 +1,7 @@
 import React from 'react';
 import { Grid, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/AddBoxOutlined';
+import AddIcon from '@material-ui/icons/AddRounded';
 import Board from '../Board';
 
 const useStyles = makeStyles((theme) => ({
@@ -88,10 +88,14 @@ export default function Home() {
         <main>
             <Container className={classes.cardGrid} maxWidth="md">
                 <Grid container spacing={4}>
-                    {boardsList}
                     <Grid item xs={12} sm={4} md={4}>
                         <AddBoardDialog />
                     </Grid>
+                </Grid>
+            </Container>
+            <Container className={classes.cardGrid} maxWidth="md">
+                <Grid container spacing={4}>
+                    {boardsList}
                 </Grid>
             </Container>
         </main>

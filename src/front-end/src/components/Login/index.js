@@ -26,11 +26,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login(props) {
     const classes = useStyles();
-
+    const history = useHistory();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+
     const token = localStorage.getItem("token");
-    const history = useHistory();
+    const handleChangeLoginStatus = props.handleChangeLoginStatus;
 
     useEffect(() => {
         if (token) { // TODO
@@ -57,7 +58,8 @@ export default function Login(props) {
                 if (response.status === 200) {
                     const data = response.data;
                     localStorage.setItem("token", data.token);
-                    console.log(localStorage.getItem("token"));
+                    localStorage.setItem("username", data.user.username)
+                    handleChangeLoginStatus();
                     alert('Successfully loged in. Welcome to Home!');
                     history.push('/');
                 }
