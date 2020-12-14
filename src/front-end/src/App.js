@@ -6,6 +6,7 @@ import LinkUI from '@material-ui/core/Link'
 import WebLogo from '@material-ui/icons/Cake';
 import AccountIcon from '@material-ui/icons/AccountBox';
 import Login from './components/Login';
+import Register from './components/Register';
 import DemoRealtime from './components/demoRealtime';
 // import Home from './components/Home';
 
@@ -126,6 +127,7 @@ function App() {
                     <main>
                         <Switch>
                             <Route path='/signin' exact component={Login} />
+                            <Route path='/register' exact component={Register} />
                             {/* '/' will be directed to demo realtime component */}
                             <Route path='/' exact component={DemoRealtime} />
                         </Switch>
