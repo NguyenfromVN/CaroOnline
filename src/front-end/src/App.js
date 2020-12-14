@@ -7,8 +7,8 @@ import WebLogo from '@material-ui/icons/Cake';
 import AccountIcon from '@material-ui/icons/AccountBox';
 import Login from './components/Login';
 import Register from './components/Register';
+import Home from './components/Home';
 import DemoRealtime from './components/demoRealtime';
-// import Home from './components/Home';
 
 function Copyright() {
     return (
@@ -128,6 +128,7 @@ function App() {
                         <Switch>
                             <Route path='/signin' exact component={Login} />
                             <Route path='/register' exact component={Register} />
+                            <Route path='/home' exact component={Home} />
                             {/* '/' will be directed to demo realtime component */}
                             <Route path='/' exact component={DemoRealtime} />
                         </Switch>
