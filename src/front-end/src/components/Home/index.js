@@ -1,8 +1,9 @@
 import React from 'react';
-import { Grid, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
+import {
+    Grid, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
+    Card, CardActionArea, CardActions, CardContent, Typography
+} from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import AddIcon from '@material-ui/icons/AddRounded';
-import Board from '../Board';
 
 const useStyles = makeStyles((theme) => ({
     icon: {
@@ -49,14 +50,14 @@ const boards = [
         id: 2,
         board: {
             boardName: "demo2",
-            user: "Phat Wang"
+            user: "Nguyen Nguyen"
         }
     },
     {
         id: 3,
         board: {
             boardName: "demo3",
-            user: "Phat Wang"
+            user: "Phan Huy"
         }
     },
     {
@@ -75,7 +76,7 @@ const boardsList = boards.map((board) => {
     //     return <div>Loading...</div>;
     // } else {
     return (
-        <Board key={board.id}
+        <BoardItem key={board.id}
             boardItem={board.board} />
     );
     // }
@@ -102,6 +103,35 @@ export default function Home() {
     );
 }
 
+function BoardItem(props) {
+    const classes = useStyles();
+    const board = props.boardItem;
+
+    return (
+        <Grid item xs={12} sm={6} md={4}>
+            <Card variant="outlined" className={classes.card}>
+                {/* <Link style={{ textDecoration: 'none', color: 'black' }} to={`/boards/${board.id}`}> */}
+                <CardActionArea>
+                    <CardContent className={classes.cardContent}>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {board.boardName}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            {board.user}
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+                {/* </Link> */}
+                <CardActions >
+                    <Button variant="outlined" size="small" color="primary">
+                        Join game
+                    </Button >
+                </CardActions>
+            </Card>
+        </Grid>
+    );
+}
+
 function AddBoardDialog(props) {
     const [open, setOpen] = React.useState(false);
     const [nameText, setNameText] = React.useState('');
@@ -122,7 +152,7 @@ function AddBoardDialog(props) {
     return (
         <div>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                <AddIcon />
+                New game
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Create game</DialogTitle>

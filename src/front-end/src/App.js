@@ -9,6 +9,7 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import DemoRealtime from './components/demoRealtime';
+import Board from './components/Board';
 
 function Copyright() {
     return (
@@ -139,6 +140,7 @@ function App() {
                             <Route path='/signin' exact component={() => (<Login handleChangeLoginStatus={handleChangeLoginStatus} />)} />
                             <Route path='/register' exact component={Register} />
                             <Route path='/home' exact component={Home} />
+                            <Route path='/board' exact component={Board} />
                             {/* '/' will be directed to demo realtime component */}
                             <Route path='/' exact component={DemoRealtime} />
                         </Switch>
