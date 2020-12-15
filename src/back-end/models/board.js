@@ -3,37 +3,96 @@ const User = require("./user.js");
 
 //Tạo schema
 let boardSchema = new mongoose.Schema({
-  id: String,
+  boardId: String,
   name: String,
-  password: String,
-  listUser: Array,
-  status: String,
-  firstTimer: Number,
-  secondTimer: Number,
-  date: Date,
-  move: Array
+  userId1: String,
+  userId2: String,
+  winner: String,
+  nextTurn: String,
+  stepNum: Number,
+  history: Array,
+  chat: Array,
 });
 
 //Tạo model
 let BoardModel = mongoose.model("Board", boardSchema);
 
 function Board() {
-
-  // Chức năng xem 1 board với id
-  this.getBoardById = function (boardId, result) {
-    BoardModel.find({
-      id: boardId, // search query
-    })
-      .then((res) => {
-        result(null, res);
-      })
-      .catch((err) => {
-        result(null, err);
-      });
+  this.getGrid = function (boardId, stepNum, result) {
+    const currentBoard = getBoard(boardId);
+    result(null, currentBoard.history[stepNum]);
   };
 
-  // Chức năng xem tất cả các board
-  this.getAllBoards = function (result) {
+  this.joinBoard = function (boardId, userId2, result) {
+    BoardModel.updateOne({ boardId }, { userId2 }, (err, res) => {
+      if (err) return result(null, err);
+      result(null, res);
+    });
+  };
+
+  this.makeTurn = function (boardId, row, col, result) {
+    const currentBoard = getBoard(boardId);
+    const newStepNum = currentBoard.stepNum + 1;
+    const newNextTurn = currentBoard.nextTurn === userId1 ? userId2 : userId1;
+    let newWinner = "";
+    let history = currentBoard.history.slice(0, newStepNum);
+    const current = history[history.length - 1];
+
+    if (calculateWinner(current)) {
+      newWinner = currentBoard.nextTurn;
+    }
+
+    const position = col - 1 + (row - 1) * 3;
+    current[position] = currentBoard.nextTurn === userId1 ? "X" : "O";
+
+    history = history.concat(current);
+
+    BoardModel.updateOne(
+      { boardId },
+      {
+        history,
+        stepNum: newStepNum,
+        nextTurn: newNextTurn,
+        winner: newWinner,
+      },
+      (err, res) => {
+        if (err) return result(null, err);
+        result(null, res);
+      }
+    );
+  };
+
+  // Chức năng thêm board mới
+  this.createBoard = function (boardId, name, userId1, result) {
+    const data = {
+      boardId,
+      name,
+      userId1,
+    };
+    if (getBoard(boardId)) {
+      result(null, "err");
+    }
+    BoardModel.create(data, function (err, res) {
+      if (err) return result(null, err);
+      result(null, res);
+    });
+  };
+
+  this.forceWin = function (boardId, username, result) {
+    const currentBoard = getBoard(boardId);
+    BoardModel.updateOne(
+      { boardId },
+      {
+        winner: username === currentBoard.userId1 ? userId2 : userId1,
+      },
+      (err, res) => {
+        if (err) return result(null, err);
+        result(null, res);
+      }
+    );
+  };
+
+  this.getAllBoards = (result) => {
     BoardModel.find()
       .then((res) => {
         result(null, res);
@@ -43,61 +102,62 @@ function Board() {
       });
   };
 
-  // Chức năng thêm board mới
-  this.addBoard = function (user, form, result) {
-    const data = {
-      ...form,
-      status: "open",
-      data: new Date(),
-      listUser: [user],
-    };
-
-    //Khi thêm board thì người tạo sẽ là người chơi
-    User.addBoardToUser(form.id, user);
-    BoardModel.create(data, function (err, res) {
-      if (err) return result(null, err);
-      result(null, res);
-    });
+  this.getBoardChat = (boardId, result) => {
+    const currentBoard = getBoard(boardId);
+    result(null, currentBoard.chat);
   };
 
-  //Khi 1 người dùng khác join vào board
-  this.joinBoard = function (user, form, result) {
-    const data = {
-      ...form,
-      status: "open",
-      data: new Date(),
-      listUser: [user],
+  this.makeMessage = (boardId, time, content, result) => {
+    const currentBoard = getBoard(boardId);
+    const newMessage = {
+      time,
+      content,
     };
-    User.addBoardToUser(form.id, user);
-    BoardModel.create(data, function (err, res) {
-      if (err) return result(null, err);
-      result(null, res);
-    });
-  };
-
-  // Bắt đầu game
-  this.startBoard = (id,result) => {
+    const newChat = { ...currentBoard.chat, newMessage };
     BoardModel.updateOne(
-      {id},
-      {status: "play"},
+      { boardId },
+      {
+        chat: newChat,
+      },
       (err, res) => {
         if (err) return result(null, err);
         result(null, res);
       }
-    )
-  }
+    );
+  };
+  this.getBoardHistory = (boardId, result) => {
+    const currentBoard = getBoard(boardId);
+    result(null, currentBoard.history);
+  };
 
-  // Kết thúc game
-  this.endBoard  = (id,result) => {
-    BoardModel.updateOne(
-      {id},
-      {status: "end"},
-      (err, res) => {
-        if (err) return result(null, err);
-        result(null, res);
-      }
-    )
-  }
+  const getBoard = (boardId) => {
+    BoardModel.find({ boardId })
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        return "err";
+      });
+  };
 }
+const calculateWinner = (squares) => {
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+  for (let i = 0; i < lines.length; i++) {
+    const [a, b, c] = lines[i];
+    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
+      return squares[a];
+    }
+  }
+  return null;
+};
 
 module.exports = new Board();

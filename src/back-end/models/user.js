@@ -2,15 +2,7 @@ let mongoose = require("mongoose");
 
 // Tạo schema
 let userSchema = new mongoose.Schema({
-  name: String,
-  username: String,
-  password: String,
-  status: String,
-  board: String,
-  email: String,
-  history: Array,
-  friends: Array,
-  elo: Number,
+   
 });
 
 // Tạo model
