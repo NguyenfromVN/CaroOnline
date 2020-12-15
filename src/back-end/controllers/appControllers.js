@@ -12,15 +12,8 @@ exports.get_user_by_credential = function (req, res) {
     }
     user = user[0];
     res.json({
-      user: {
-        username: user.username,
-        history: user.history,
-        friends: user.friends,
-        elo: user.elo,
-        board: user.board,
-        status: user.status,
-      },
-      token: jwt.sign({ username: user.username }, "RESTFULAPIs"),
+      user: user,
+      token: jwt.sign({ user: user }, "RESTFULAPIs"),
     });
   });
 };

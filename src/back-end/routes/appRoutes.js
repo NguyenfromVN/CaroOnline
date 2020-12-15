@@ -18,7 +18,7 @@ module.exports = function (app, passport) {
         "RESTFULAPIs",
         function (err, decode) {
           if (err) req.user = undefined;
-          req.user = decode;
+          req.user = decode.user;
           next();
         }
       );
