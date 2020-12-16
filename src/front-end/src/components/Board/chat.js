@@ -5,6 +5,13 @@ const Chat = () => {
 
     return (
         <div className='chat-frame'>
+            <div>
+                {/* list of message */}
+            </div>
+            <div className='text-box'>
+                <input className='message-text-box' type='text'/>
+                <button className='send-button'>SEND</button>
+            </div>
         </div>
     );
 }

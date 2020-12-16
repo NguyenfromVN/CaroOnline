@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import api from '../../api/userApi';
 import {
     Grid, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     Card, CardActionArea, CardActions, CardContent, Typography
@@ -38,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 // const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-const boards = [
+/* const boards = [
     {
         id: 1,
         board: {
@@ -67,23 +69,39 @@ const boards = [
             user: "Phat Wang"
         }
     },
-]
+] */
 
-const boardsList = boards.map((board) => {
-    // if (error) {
-    //     return <div>Error: {error.message}</div>;
-    // } else if (loading) {
-    //     return <div>Loading...</div>;
-    // } else {
-    return (
-        <BoardItem key={board.id}
-            boardItem={board.board} />
-    );
-    // }
-});
+const boardsList = boards => (
+    boards.map((board) => {
+        // if (error) {
+        //     return <div>Error: {error.message}</div>;
+        // } else if (loading) {
+        //     return <div>Loading...</div>;
+        // } else {
+        return (
+            <BoardItem key={board.boardId}
+                boardItem={board} />
+        );
+        // }
+    })
+);
 
 export default function Home() {
     const classes = useStyles();
+    const [boards,setBoards]=useState([]);
+    const history = useHistory();
+
+    useEffect(()=>{
+        (async ()=>{
+            // call API and get boards
+            let response = await api.getAllBoards();
+            if (response.message == 'Unauthorized'){
+                history.push('/signin');
+                return;
+            }
+            setBoards(response);
+        })();
+    },[]);
 
     return (
         <main>
@@ -96,7 +114,7 @@ export default function Home() {
             </Container>
             <Container className={classes.cardGrid} maxWidth="md">
                 <Grid container spacing={4}>
-                    {boardsList}
+                    {boardsList(boards)}
                 </Grid>
             </Container>
         </main>
@@ -106,6 +124,7 @@ export default function Home() {
 function BoardItem(props) {
     const classes = useStyles();
     const board = props.boardItem;
+    const history = useHistory();
 
     return (
         <Grid item xs={12} sm={6} md={4}>
@@ -114,18 +133,24 @@ function BoardItem(props) {
                 <CardActionArea>
                     <CardContent className={classes.cardContent}>
                         <Typography gutterBottom variant="h5" component="h2">
-                            {board.boardName}
+                            {board.name}
+                        </Typography>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {board.boardId}
                         </Typography>
                         <Typography variant="body2" color="textSecondary" component="p">
-                            {board.user}
+                            {board.userId1}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary" component="p">
+                            {board.userId2}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
                 {/* </Link> */}
                 <CardActions >
-                    <Button variant="outlined" size="small" color="primary">
-                        Join game
-                    </Button >
+                <Button variant="outlined" color="primary" onClick={()=>history.push(`/board?id=${board.boardId}`)}>
+                    JOIN GAME
+                </Button>
                 </CardActions>
             </Card>
         </Grid>

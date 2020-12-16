@@ -42,7 +42,7 @@ exports.join_board = function (req, res) {
 };
 
 exports.make_turn = function (req, res) {
-  const { boardId, row, col } = req.body;
+  const { boardId, row, col } = req.query;
   Board.makeTurn(boardId, row, col, function (err, board) {
     if (err) res.send(err);
     res.json(board);
@@ -81,7 +81,7 @@ exports.get_board_chat = function (req, res) {
 };
 
 exports.get_board_history = function (req, res) {
-  const { boardId } = req.body;
+  const { boardId } = req.query;
   Board.getBoardHistory(boardId, req.user.username, function (err, board) {
     if (err) res.send(err);
     res.json(board);

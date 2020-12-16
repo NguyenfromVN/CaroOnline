@@ -17,6 +17,11 @@ axiosClient.interceptors.request.use(async (config) => {
     //   config.headers.Authorization = `Bearer ${token}`;
     // }
 
+    const token=localStorage.getItem("token");
+    if (token){
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
     return config;
 });
 
