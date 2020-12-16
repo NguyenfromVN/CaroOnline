@@ -26,7 +26,7 @@ exports.add_user_by_credential = function (req, res) {
 };
 
 exports.get_grid = function (req, res) {
-  const { boardId, stepNum } = req.body;
+  const { boardId, stepNum } = req.query;
   Board.getGrid(boardId, stepNum, function (err, grid) {
     if (err) res.send(err);
     res.send(grid);

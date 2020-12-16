@@ -18,9 +18,9 @@ let boardSchema = new mongoose.Schema({
 let BoardModel = mongoose.model("Board", boardSchema);
 
 function Board() {
-  this.getGrid = function (boardId, stepNum, result) {
-    const currentBoard = getBoard(boardId);
-    result(null, currentBoard.history[stepNum]);
+  this.getGrid = async function (boardId, stepNum, result) {
+    const currentBoard = (await getBoard(boardId))[0];
+    result(null, currentBoard.history[stepNum | currentBoard.history.length-1]);
   };
 
   this.joinBoard = function (boardId, userId2, result) {
@@ -130,14 +130,14 @@ function Board() {
     result(null, currentBoard.history);
   };
 
-  const getBoard = (boardId) => {
-    BoardModel.find({ boardId })
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        return "err";
-      });
+  const getBoard = async (boardId) => {
+    let res;
+    try {
+      res=await BoardModel.find({ boardId });
+    } catch (err){
+      return "err";
+    }
+    return res;
   };
 }
 const calculateWinner = (squares) => {
