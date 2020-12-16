@@ -34,7 +34,7 @@ exports.get_grid = function (req, res) {
 };
 
 exports.join_board = function (req, res) {
-  const { boardId } = req.body;
+  const { boardId } = req.query;
   Board.joinBoard(boardId, req.user.username, function (err, grid) {
     if (err) res.send(err);
     res.send(grid);
@@ -50,9 +50,12 @@ exports.make_turn = function (req, res) {
 };
 
 exports.create_board = function (req, res) {
-  const { name, boardId } = req.body;
+  const { name, boardId } = req.query;
   Board.createBoard(boardId, name, req.user.username, function (err, board) {
-    if (err) res.send(err);
+    if (err) {
+      res.send(err);
+      return;
+    }
     res.json(board);
   });
 };
@@ -73,8 +76,8 @@ exports.get_all_boards = function (req, res) {
 };
 
 exports.get_board_chat = function (req, res) {
-  const { boardId } = req.body;
-  Board.getBoardChat(boardId, req.user.username, function (err, board) {
+  const { boardId } = req.query;
+  Board.getBoardChat(boardId, function (err, board) {
     if (err) res.send(err);
     res.json(board);
   });
@@ -89,7 +92,7 @@ exports.get_board_history = function (req, res) {
 };
 
 exports.make_message = function (req, res) {
-  const { boardId, time, content } = req.body;
+  const { boardId, time, content } = req.query;
   Board.makeMessage(
     boardId,
     time,

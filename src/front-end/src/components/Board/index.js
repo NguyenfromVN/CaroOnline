@@ -45,9 +45,8 @@ const renderSquare = (props) => {
 
 export default function Board(props) {
     const [board, setBoard] = useState({});
-    const boardId = (new URL(document.location)).searchParams.get('boardId');
+    const boardId = (new URL(document.location)).searchParams.get('id');
     const history = useHistory();
-    const [squares, setSquares] = useState([]);
     const classes = useStyles();
 
     useEffect(() => {
@@ -58,24 +57,27 @@ export default function Board(props) {
                 history.push('/signin');
                 return;
             }
-            console.log(board);
-            setSquares(board.history[board.history.length - 1]);
             setBoard(board);
         })();
     }, []);
 
-    function takeTurn(row, col){
-        
+    async function takeTurn(row, col){
+        await api.takeTurn(boardId,row,col);
+        let board = await api.getBoard(boardId);
+        setBoard(board);
     }
 
-    function renderSquares(squares) {
+    function renderSquares() {
+        if (!board.boardId)
+            return;
+        let squares=board.history[board.history.length - 1].squares;
         let jsx=[];
         for (let i=0; i<boardSize; i++) {
             let row=[];
             for (let j=0; j<boardSize; j++) {
                 row.push(renderSquare({
                     value: squares[i*boardSize+j],
-                    onClick: takeTurn(i,j)
+                    onClick: ()=>takeTurn(i,j)
                 }));
             }
             jsx.push(<div key={i} className="board-row">{row}</div>);
@@ -90,9 +92,9 @@ export default function Board(props) {
                     {/* for history later */}
                 </div>
                 <div >
-                    {renderSquares(squares)}
+                    {renderSquares()}
                 </div>
-                <Chat />
+                <Chat boardId={boardId}/>
             </div>
         </div>
     );

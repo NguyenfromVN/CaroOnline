@@ -19,7 +19,7 @@ let BoardModel = mongoose.model("Board", boardSchema);
 
 function Board() {
   this.getGrid = async function (boardId, stepNum, result) {
-    const currentBoard = (await getBoard(boardId))[0];
+    const currentBoard = await getBoard(boardId);
     result(null, currentBoard.history[stepNum | currentBoard.history.length-1]);
   };
 
@@ -30,20 +30,21 @@ function Board() {
     });
   };
 
-  this.makeTurn = function (boardId, row, col, result) {
-    const currentBoard = getBoard(boardId);
-    const newStepNum = currentBoard.stepNum + 1;
-    const newNextTurn = currentBoard.nextTurn === userId1 ? userId2 : userId1;
+  this.makeTurn = async function (boardId, row, col, result) {
+    row=parseInt(row);
+    col=parseInt(col);
+    const currentBoard = await getBoard(boardId);
+    const newStepNum = currentBoard.history.length;
+    const newNextTurn = currentBoard.nextTurn === currentBoard.userId1 ? currentBoard.userId2 : currentBoard.userId1;
     let newWinner = "";
     let history = currentBoard.history.slice(0, newStepNum);
-    const current = history[history.length - 1];
+    const current = JSON.parse(JSON.stringify(history[history.length - 1]));
+    const position = row*3+col;
+    current.squares[position] = currentBoard.nextTurn === currentBoard.userId1 ? "X" : "O";
 
     if (calculateWinner(current)) {
       newWinner = currentBoard.nextTurn;
     }
-
-    const position = col - 1 + (row - 1) * 3;
-    current[position] = currentBoard.nextTurn === userId1 ? "X" : "O";
 
     history = history.concat(current);
 
@@ -63,23 +64,32 @@ function Board() {
   };
 
   // Chức năng thêm board mới
-  this.createBoard = function (boardId, name, userId1, result) {
+  this.createBoard = async function (boardId, name, userId1, result) {
     const data = {
       boardId,
       name,
       userId1,
+      history: [
+        {
+          squares: [null,null,null,null,null,null,null,null,null]
+        }
+      ]
     };
-    if (getBoard(boardId)) {
+    let checkDuplicate= await getBoard(boardId);
+    if (checkDuplicate) {
       result(null, "err");
+      return;
     }
     BoardModel.create(data, function (err, res) {
-      if (err) return result(null, err);
+      if (err) {
+        return result(null, err);
+      }
       result(null, res);
     });
   };
 
-  this.forceWin = function (boardId, username, result) {
-    const currentBoard = getBoard(boardId);
+  this.forceWin = async function (boardId, username, result) {
+    const currentBoard = await getBoard(boardId);
     BoardModel.updateOne(
       { boardId },
       {
@@ -102,18 +112,20 @@ function Board() {
       });
   };
 
-  this.getBoardChat = (boardId, result) => {
-    const currentBoard = getBoard(boardId);
+  this.getBoardChat = async (boardId, result) => {
+    const currentBoard = await getBoard(boardId);
     result(null, currentBoard.chat);
   };
 
-  this.makeMessage = (boardId, time, content, result) => {
-    const currentBoard = getBoard(boardId);
+  this.makeMessage = async (boardId, time, content, from, result) => {
+    const currentBoard = await getBoard(boardId);
     const newMessage = {
       time,
       content,
+      from
     };
-    const newChat = { ...currentBoard.chat, newMessage };
+    let newChat = currentBoard.chat.slice(0,currentBoard.chat.length);
+    newChat.push(newMessage);
     BoardModel.updateOne(
       { boardId },
       {
@@ -125,8 +137,8 @@ function Board() {
       }
     );
   };
-  this.getBoardHistory = (boardId, result) => {
-    const currentBoard = getBoard(boardId);
+  this.getBoardHistory = async (boardId, result) => {
+    const currentBoard = await getBoard(boardId);
     result(null, currentBoard.history);
   };
 
@@ -137,7 +149,7 @@ function Board() {
     } catch (err){
       return "err";
     }
-    return res;
+    return (res.length ? res[0] : undefined);
   };
 }
 const calculateWinner = (squares) => {

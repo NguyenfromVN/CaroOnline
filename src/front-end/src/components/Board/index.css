@@ -40,6 +40,20 @@
     grid-template-rows: 5fr 1fr;
 }
 
+.message-tag-left {
+    display: grid;
+    grid-template-columns: 5fr 1fr;
+}
+
+.message-tag-right {
+    display: grid;
+    grid-template-columns: 1fr 5fr;
+}
+
+.list-chat {
+    overflow: auto;
+}
+
 .text-box {
     display: flex;
     background-color: #dddddd;

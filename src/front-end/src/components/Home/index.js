@@ -88,27 +88,27 @@ const boardsList = boards => (
 
 export default function Home() {
     const classes = useStyles();
-    const [boards,setBoards]=useState([]);
+    const [boards, setBoards] = useState([]);
     const history = useHistory();
 
-    useEffect(()=>{
-        (async ()=>{
+    useEffect(() => {
+        (async () => {
             // call API and get boards
             let response = await api.getAllBoards();
-            if (response.message == 'Unauthorized'){
+            if (response.message == 'Unauthorized') {
                 history.push('/signin');
                 return;
             }
             setBoards(response);
         })();
-    },[]);
+    }, []);
 
     return (
         <main>
             <Container className={classes.cardGrid} maxWidth="md">
                 <Grid container spacing={4}>
                     <Grid item xs={12} sm={4} md={4}>
-                        <AddBoardDialog />
+                        <AddBoardDialog callback={setBoards}/>
                     </Grid>
                 </Grid>
             </Container>
@@ -125,6 +125,17 @@ function BoardItem(props) {
     const classes = useStyles();
     const board = props.boardItem;
     const history = useHistory();
+
+    async function joinGame() {
+        if (!board.userId1 || !board.userId2) {
+            // join game
+            if (board.userId1 != localStorage.getItem('username') && board.userId2 != localStorage.getItem('username'))
+                await api.joinBoard(board.boardId);
+        } else if (board.userId1 && board.userId2)
+            if (board.userId1 != localStorage.getItem('username') && board.userId2 != localStorage.getItem('username'))
+                return;
+        history.push(`/board?id=${board.boardId}`);
+    }
 
     return (
         <Grid item xs={12} sm={6} md={4}>
@@ -148,8 +159,8 @@ function BoardItem(props) {
                 </CardActionArea>
                 {/* </Link> */}
                 <CardActions >
-                <Button variant="outlined" color="primary" onClick={()=>history.push(`/board?id=${board.boardId}`)}>
-                    JOIN GAME
+                    <Button variant="outlined" color="primary" onClick={joinGame}>
+                        JOIN GAME
                 </Button>
                 </CardActions>
             </Card>
@@ -174,6 +185,13 @@ function AddBoardDialog(props) {
         setNameText(e.target.value);
     };
 
+    async function createNewBoard(e) {
+        handleClose();
+        await api.createBoard(nameText,nameText);
+        let boards = await api.getAllBoards();
+        props.callback(boards);
+    }
+
     return (
         <div>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
@@ -185,25 +203,23 @@ function AddBoardDialog(props) {
                     <DialogContentText>
                         To create a new game, please fill out board's name in the box.
                     </DialogContentText>
-                    <form method="POST">
-                        <TextField
-                            autoFocus
-                            margin="dense"
-                            id="name"
-                            label="Name"
-                            variant="outlined"
-                            fullWidth
-                            onChange={handleNameChange}
-                        />
-                        <DialogActions>
-                            <Button onClick={handleClose} color="primary">
-                                Cancel
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        onChange={handleNameChange}
+                    />
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancel
                             </Button>
-                            <Button type="submit" color="primary">
-                                Create
+                        <Button type="submit" color="primary" onClick={createNewBoard}>
+                            Create
                             </Button>
-                        </DialogActions>
-                    </form>
+                    </DialogActions>
                 </DialogContent>
             </Dialog>
         </div>
