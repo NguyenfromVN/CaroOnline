@@ -101,7 +101,7 @@ const topics=(()=>{
 wss.on('connection',(socket,req)=>{
   // each user can have more than one connection, each connection will be identified by a random number
   // each connection can have a lot of following topics, so use an array to store these
-  let topics = ['general']; // by default, every connection subscribes to "general" topic
+  let topicsList = ['general']; // by default, every connection subscribes to "general" topic
   let userId=req.url.split('?')[1].split('=')[1];
   let socketId=Math.random();
   topics.subscribeToTopic('general',socket,userId,socketId);
@@ -111,12 +111,21 @@ wss.on('connection',(socket,req)=>{
   socket.on('message',msg=>{
       console.log(`Message from user ${userId}:`);
       console.log(msg);
-      // do something
+      if (msg.split('>>>')[1]=='changed'){
+        // some changes happend
+        topics.broadcastChange(msg.split('>>>')[0]);
+      } else {
+        // want to subscribe a topic
+        topics.subscribeToTopic(msg.split('>>>')[0],socket,userId,socketId);
+        topicsList.push(msg.split('>>>')[0]);
+      }
   });
 
   socket.on('close',()=>{
       console.log(`User ${userId} disconnected`);
-      topics.removeSubscription('general',userId,socketId,socketId);
+      topicsList.forEach(topic => {
+        topics.removeSubscription(topic,userId,socketId,socketId);
+      })
       removeActiveUser(userId);
       topics.broadcastChange('general');
   })

@@ -5,6 +5,7 @@ import './index.css';
 import { useHistory } from 'react-router-dom';
 import api from '../../api/userApi';
 import { makeStyles } from '@material-ui/core/styles';
+import ws from '../../webSocketClient';
 
 const useStyles = makeStyles((theme) => ({
     // icon: {
@@ -45,6 +46,7 @@ const renderSquare = (props) => {
 
 export default function Board(props) {
     const [board, setBoard] = useState({});
+    const [chat, setChat] = useState([]);
     const boardId = (new URL(document.location)).searchParams.get('id');
     const history = useHistory();
     const classes = useStyles();
@@ -58,13 +60,45 @@ export default function Board(props) {
                 return;
             }
             setBoard(board);
+            // get chat
+            let chat=await api.getBoardChat(boardId);
+            setChat(chat);
+            // init web socket client
+            ws.createConnection(localStorage.getItem('username'),(topicName)=>{
+                let callbacks={
+                    chat: async function(){
+                        let newChat=await api.getBoardChat(boardId);
+                        setChat(newChat);
+                        // scroll to the bottom
+                        setTimeout(()=>{
+                            let element = document.getElementById("listChat");
+                            element.scrollTop = element.scrollHeight;
+                        },0);
+                    },
+                    board: async function(){
+                        let board = await api.getBoard(boardId);
+                        setBoard(board);
+                    },
+                    general: function(){
+                        // TODO
+                    }
+                };
+                let arr=topicName.split('>>>')[0];
+                arr=arr.split('-');
+                let topic=arr[arr.length-1];
+                callbacks[topic]();
+            });
+            let topic=`${board.userId1}-${board.userId2}`;
+            ws.subscribeTopic(`${topic}-board`);
+            ws.subscribeTopic(`${topic}-chat`);
         })();
     }, []);
 
     async function takeTurn(row, col){
         await api.takeTurn(boardId,row,col);
-        let board = await api.getBoard(boardId);
-        setBoard(board);
+        ws.notifyChange(`${board.userId1}-${board.userId2}-board`);
+        let newBoard = await api.getBoard(boardId);
+        setBoard(newBoard);
     }
 
     function renderSquares() {
@@ -89,12 +123,12 @@ export default function Board(props) {
         <div>
             <div className='board-game'>
                 <div>
-                    {/* for history later */}
+                    {/* for history */}
                 </div>
                 <div >
                     {renderSquares()}
                 </div>
-                <Chat boardId={boardId}/>
+                <Chat boardId={boardId} chat={chat} topicName={`${board.userId1}-${board.userId2}-chat`}/>
             </div>
         </div>
     );

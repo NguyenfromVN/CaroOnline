@@ -6,7 +6,7 @@
 
 .board-game {
     display: grid;
-    height: 400px;
+    height: 500px;
     grid-template-columns: 1fr 5fr 4fr;
 }
 
@@ -34,10 +34,11 @@
 }
 
 .chat-frame {
+    height: inherit;
     background: #eeeeee;
     border: 0px;
     display: grid;
-    grid-template-rows: 5fr 1fr;
+    grid-template-rows: 6fr 1fr;
 }
 
 .message-tag-left {

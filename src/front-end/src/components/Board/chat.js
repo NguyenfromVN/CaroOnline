@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/userApi';
 import './index.css';
+import ws from '../../webSocketClient';
 
 const Chat = (props) => {
     const [msg,setMsg]=useState("");
-    const [listChat,setListChat]=useState(null);
 
-    useEffect(()=>{
-        (async()=>{
-            let list=await getListChat();
-            setListChat(list);
-        })();
-    },[]);
-
-    async function getListChat(){
-        let boardId=props.boardId;
-        let chat=await api.getBoardChat(boardId);
+    function getListChat(){
+        let chat=props.chat;
         let jsx=[];
         let username=localStorage.getItem('username');
         for (let i=0; i<chat.length; i++){
@@ -56,15 +48,18 @@ const Chat = (props) => {
             }
         }
         return jsx;
-    }    
+    }   
+    
+    let listChat=getListChat();
 
-    function sendMessage(){
-        api.makeMessage(props.boardId,new Date().getTime(),msg);    
+    async function sendMessage(){
+        await api.makeMessage(props.boardId,new Date().getTime(),msg); 
+        ws.notifyChange(props.topicName);
     }
 
     return (
         <div className='chat-frame'>
-            <div className="list-chat">
+            <div className="list-chat" id='listChat'>
                 {listChat}
             </div>
             <div className='text-box'>
