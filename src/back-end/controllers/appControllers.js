@@ -10,7 +10,10 @@ exports.get_user_by_credential = function (req, res) {
     if (user.length <= 0) {
       res.status(401).send({ message: "Wrong password" });
     }
-    user = user[0];
+    user = JSON.parse(JSON.stringify(user[0]));
+    if (!user.isValidated) {
+      res.status(401).send({ message: "Account is not validated" });
+    }
     res.json({
       user: user,
       token: jwt.sign({ user: user }, "RESTFULAPIs"),
@@ -22,6 +25,13 @@ exports.add_user_by_credential = function (req, res) {
   User.addUserByCredential(req.body, function (err, user) {
     if (err) res.send(err);
     res.json(user);
+  });
+};
+
+exports.validate_user = (req, res) => {
+  User.validateUser(req.params.username, function (err, user) {
+    if (err) res.send(err);
+    res.send(user);
   });
 };
 

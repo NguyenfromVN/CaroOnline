@@ -43,6 +43,7 @@ module.exports = function (app, passport) {
   // user Routes
   app.route("/login").post(controller.get_user_by_credential);
   app.route("/register").post(controller.add_user_by_credential);
+  app.route("/validate/:username").post(controller.validate_user);
 
   // facebook Routes
   app.get("/auth/fb", passport.authenticate("facebook", { scope: ["email"] }));
