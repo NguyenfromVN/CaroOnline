@@ -143,7 +143,7 @@ function App() {
                             <Route path='/' exact component={Home} />
                             <Route path='/board' exact component={Board} />
                             <Route path='/check-mail' exact component={CheckMail} />
-                            <Route path='/mail-validate' exact component={MailValidate} />
+                            <Route path='/validate' exact component={MailValidate} />
                         </Switch>
                     </main>
                     {/* Footer */}
