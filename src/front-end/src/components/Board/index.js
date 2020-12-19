@@ -69,11 +69,6 @@ export default function Board(props) {
                     chat: async function(){
                         let newChat=await api.getBoardChat(boardId);
                         setChat(newChat);
-                        // scroll to the bottom
-                        setTimeout(()=>{
-                            let element = document.getElementById("listChat");
-                            element.scrollTop = element.scrollHeight;
-                        },0);
                     },
                     board: async function(){
                         let board = await api.getBoard(boardId);
@@ -118,6 +113,12 @@ export default function Board(props) {
         }
         return jsx;
     }
+
+    // scroll to the bottom of chat frame
+    setTimeout(()=>{
+        let element = document.getElementById("listChat");
+        element.scrollTop = element.scrollHeight;
+    },0);
 
     return (
         <div>

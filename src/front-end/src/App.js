@@ -9,6 +9,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Home from './components/Home';
 import Board from './components/Board';
+import CheckMail from './components/CheckMail';
+import MailValidate from './components/MailValidate';
 
 function Copyright() {
     return (
@@ -140,6 +142,8 @@ function App() {
                             <Route path='/register' exact component={Register} />
                             <Route path='/' exact component={Home} />
                             <Route path='/board' exact component={Board} />
+                            <Route path='/check-mail' exact component={CheckMail} />
+                            <Route path='/mail-validate' exact component={MailValidate} />
                         </Switch>
                     </main>
                     {/* Footer */}
