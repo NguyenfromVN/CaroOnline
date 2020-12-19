@@ -55,7 +55,7 @@ export default function Board(props) {
         (async () => {
             // get board
             const board = await api.getBoard(boardId);
-            if (board.message == 'Unauthorized') {
+            if (board.message) {
                 history.push('/signin');
                 return;
             }

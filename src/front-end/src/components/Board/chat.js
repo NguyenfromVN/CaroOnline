@@ -55,6 +55,7 @@ const Chat = (props) => {
     async function sendMessage(){
         await api.makeMessage(props.boardId,new Date().getTime(),msg); 
         ws.notifyChange(props.topicName);
+        setMsg('');
     }
 
     return (
@@ -68,7 +69,14 @@ const Chat = (props) => {
                     onChange={(e)=>{
                         setMsg(e.target.value);
                     }}
+                    onKeyPress={(e)=>{
+                        if ((e.code || e.key)=='Enter'){
+                            // ENTER is pressed
+                            sendMessage();
+                        }
+                    }}
                     type='text'
+                    value={msg}
                 />
                 <button className='send-button' onClick={sendMessage}>SEND</button>
             </div>

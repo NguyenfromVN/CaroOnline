@@ -1,15 +1,18 @@
 import axiosClient from "./axiosClient";
+import axios from 'axios';
 
 const userApi = {
-    login: (username, password) => {
-        const url = '/login';
-        axiosClient.post(url, {
-            username: username,
-            password: password
-        })
-            .then(function (response) {
-                // console.log(response);
+    login: async (username, password) => {
+        let response;
+        try {
+            response = await axios.post('http://localhost:3001/login', {
+                username: username,
+                password: password
             })
+        } catch (e) {
+            response = e.response.data;
+        }
+        return response;
     },
     register: async (email, username, password) => {
         const url = '/register';
@@ -27,11 +30,19 @@ const userApi = {
     },
     getAllBoards: async () => {
         const url = '/board/get_all_boards';
-        const response = await axiosClient.get(url);
+        let response;
+        try {
+            response = await axiosClient.get(url);
+        } catch (e){
+            response=e.response.data;
+        }
         return response;
     },
     getBoard: async function (boardId) {
         let boards = await this.getAllBoards();
+        if (boards.message){
+            return boards;
+        }
         for (let i = 0; i < boards.length; i++) {
             if (boards[i].boardId == boardId)
                 return boards[i];

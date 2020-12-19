@@ -95,7 +95,7 @@ export default function Home() {
         (async () => {
             // call API and get boards
             let response = await api.getAllBoards();
-            if (response.message == 'Unauthorized') {
+            if (response.message) {
                 history.push('/signin');
                 return;
             }

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Avatar, Button, CssBaseline, TextField, Typography, makeStyles, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import axios from 'axios';
+import api from '../../api/userApi';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -50,24 +50,21 @@ export default function Login(props) {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        try {
-            await axios.post('http://localhost:3001/login', {
-                username: username,
-                password: password
-            }).then(function (response) {
-                if (response.status === 200) {
-                    const data = response.data;
-                    localStorage.setItem("token", data.token);
-                    localStorage.setItem("username", data.user.username)
-                    handleChangeLoginStatus();
-                    alert('Successfully loged in. Welcome to Home!');
-                    history.push('/');
-                }
-            })
-        } catch (error) {
-            alert('Username or password is not correct. Please try again!');
+        let response = await api.login(username, password);
+        if (response.message) {
+            if (response.message == 'Invalid') {
+                alert("Username or password is not correct. Please try again!");
+            } else {
+                alert("Check out your email to validate this account!");
+            }
             history.push('/signin');
-            console.log('Failed to fetch product list: ', error);
+        } else {
+            const data = response.data;
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("username", data.user.username)
+            handleChangeLoginStatus();
+            alert('Successfully loged in. Welcome to Home!');
+            history.push('/');
         }
     }
 
