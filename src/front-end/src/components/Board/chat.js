@@ -17,7 +17,7 @@ const Chat = (props) => {
                         <div></div>
                         <div 
                             style={{
-                                backgroundColor: "#cccccc", 
+                                backgroundColor: "#99eeee", 
                                 borderRadius: "5px",
                                 margin: "10px",
                                 boxSizing: "border-box",
