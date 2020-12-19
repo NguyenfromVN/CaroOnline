@@ -1,7 +1,8 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import { Avatar, Button, CssBaseline, TextField, Grid, Typography, makeStyles, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import api from '../../api/userApi';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -25,6 +26,19 @@ const useStyles = makeStyles((theme) => ({
 
 export default function RegisterForm() {
     const classes = useStyles();
+    const history = useHistory();
+
+    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+
+    const handleRegister = async (e) => {
+        e.preventDefault();
+
+        await api.register(email, username, password);
+        history.push('/check-mail');
+
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -36,19 +50,8 @@ export default function RegisterForm() {
                 <Typography component="h1" variant="h5">
                     Sign up
                 </Typography>
-                <form className={classes.form} noValidate>
+                <form className={classes.form} method="POST">
                     <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="name"
-                                label="Full Name"
-                                name="fullname"
-                                autoComplete="fullname"
-                            />
-                        </Grid>
                         <Grid item xs={12}>
                             <TextField
                                 variant="outlined"
@@ -58,6 +61,9 @@ export default function RegisterForm() {
                                 label="Email Address"
                                 name="email"
                                 autoComplete="email"
+                                onChange={(e) => {
+                                    setEmail(e.target.value);
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -69,6 +75,9 @@ export default function RegisterForm() {
                                 label="Username"
                                 name="username"
                                 autoComplete="username"
+                                onChange={(e) => {
+                                    setUsername(e.target.value);
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12}>
@@ -81,6 +90,9 @@ export default function RegisterForm() {
                                 type="password"
                                 id="password"
                                 autoComplete="current-password"
+                                onChange={(e) => {
+                                    setPassword(e.target.value);
+                                }}
                             />
                         </Grid>
                     </Grid>
@@ -90,6 +102,7 @@ export default function RegisterForm() {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
+                        onClick={handleRegister}
                     >
                         Sign Up
                     </Button>
