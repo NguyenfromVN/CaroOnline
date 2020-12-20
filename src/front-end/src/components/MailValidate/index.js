@@ -22,27 +22,34 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
+let createCallback=0;
+const timeInterval=200;
+
 export default function MailValidate(props) {
     const classes = useStyles();
     const [loading, setLoading] = useState('...');
     const history = useHistory();
 
     // update loading
-    setTimeout(() => {
-        if (loading.length < 3) {
-            setLoading(loading + '.');
-        } else {
-            setLoading('');
-        }
-    }, 200);
+    let current=new Date().getTime();
+    // create only 1 callback at a time
+    if (current-createCallback>=timeInterval){
+        createCallback=current;
+        setTimeout(() => {
+            if (loading.length < 3) {
+                setLoading(loading + '.');
+            } else {
+                setLoading('');
+            }
+        }, timeInterval);
+    }
 
     useEffect(async () => {
         // get username from url
         let username = (new URL(document.location)).searchParams.get('username');
         // call api for validation
-        // api.validate(username);
         await api.validate(username);
-        //delete all local storages on App
+        // delete all local storages on App
         localStorage.setItem("username", "");
         localStorage.setItem("loginStatus", "false");
         localStorage.setItem("token", "");
