@@ -10,38 +10,39 @@ module.exports = function (passport) {
         clientID: config.FACEBOOK_CLIENT_ID,
         clientSecret: config.FACEBOOK_CLIENT_SECRET,
         //URL nhận giá trị trả về
-        callbackURL: "http://localhost:3000/auth/fb/cb",
+        callbackURL: "http://localhost:3001/auth/fb/cb",
         //Các trường dữ liệu yêu cầu fb trả về
         profileFields: ["email", "name"],
-        passReqToCallback: true,
+        enableProof: true,
       },
       (accessToken, refreshToken, profile, done) => {
-        userModel
-          .getModel()
-          .findOne({ username: profile._json.name }, (err, user) => {
-            if (err) return done(err);
-            //Nếu đã có User trong db rồi thì đăng nhập
-            if (user) return done(null, user);
-            //Nếu chưa có User trong db thì tạo mới
-            const newUser = new userModel.getModel()({
-              username: profile._json.name,
-              email: profile._json.email,
-              elo: 0,
-            });
-            newUser.save((err) => {
-              return done(null, newUser);
-            });
+        const { first_name, email } = profile._json;
+        userModel.Model.findOne({ username: first_name }, (err, user) => {
+          if (err) return done(err);
+          //Nếu đã có User trong db rồi thì đăng nhập
+          if (user) return done(null, user);
+          //Nếu chưa có User trong db thì tạo mới
+          const newUser = new userModel.Model({
+            username: first_name,
+            email: email,
+            status: "offline",
+            isValidated: true,
+            board: "",
           });
+          newUser.save((err) => {
+            return done(null, newUser);
+          });
+        });
       }
     )
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.username);
   });
 
-  passport.deserializeUser((id, done) => {
-    userModel.getModel().findOne({ id }, (err, user) => {
+  passport.deserializeUser((username, done) => {
+    userModel.Model.findOne({ username }, (err, user) => {
       done(null, user);
     });
   });

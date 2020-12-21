@@ -2,6 +2,7 @@
 const express = require("express");
 const protectedRoutes = express.Router();
 const jsonwebtoken = require("jsonwebtoken");
+const config = require("../config");
 
 module.exports = function (app, passport) {
   var controller = require("../controllers/appControllers");
@@ -50,8 +51,10 @@ module.exports = function (app, passport) {
   app.get(
     "/auth/fb/cb",
     passport.authenticate("facebook", {
-      failureRedirect: "/login ",
-      successRedirect: "/",
-    })
+      failureRedirect: `${config.FRONTEND_HOST}/error`,
+    }),
+    (req, res) => {
+      res.send(`success`);
+    }
   );
 };

@@ -28,10 +28,7 @@ const option = {
 var transporter = nodemailer.createTransport(option);
 
 function User() {
-  this.getModel = () => {
-    return UserModel;
-  };
-
+  this.Model = UserModel;
   //Chức năng login
   this.getUserByCredential = function (credential, result) {
     UserModel.find({
