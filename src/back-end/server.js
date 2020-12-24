@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 const db = require("./utils/db");
 const cors = require("cors");
 const passport = require("passport");
+const User = require("./models/user");
 port = process.env.PORT || 3001;
 const session = require("express-session");
 
@@ -38,9 +39,22 @@ ggLogin(passport);
 // global variable to store active users list
 const activeUsers = {};
 
-// API to get active users
-app.get("/active-users", (req, res) => {
-  res.send(activeUsers);
+// API to get users list
+app.get('/users',(req,res)=>{
+  User.getAllUsers(function (err, users) {
+    if (err) {
+      res.send(err);
+      return;
+    }
+    let arr=[];
+    users.forEach(user => {
+      arr.push({username: user.username, isActive: false});
+      if (activeUsers[user.username]) {
+        arr[arr.length - 1].isActive=true;
+      }
+    });
+    res.json(arr);
+  });
 });
 
 // helpers for active users
@@ -82,11 +96,11 @@ const topics = (() => {
     console.log(topics);
   }
 
-  function broadcastChange(topicName) {
+  function broadcastChange(topicName, subTopic) {
     for (let userId in topics[topicName]) {
       for (let socketId in topics[topicName][userId]) {
         let socket = topics[topicName][userId][socketId];
-        socket.send(`${topicName}>>>has new update`);
+        socket.send(`${topicName+(subTopic ? '-'+subTopic : '')}>>>has new update`);
       }
     }
   }
@@ -101,19 +115,23 @@ const topics = (() => {
 wss.on("connection", (socket, req) => {
   // each user can have more than one connection, each connection will be identified by a random number
   // each connection can have a lot of following topics, so use an array to store these
-  let topicsList = ["general"]; // by default, every connection subscribes to "general" topic
+  let topicsList = ['general']; // by default, every connection subscribes to "general" topic, for general notification
   let userId = req.url.split("?")[1].split("=")[1];
   let socketId = Math.random();
   topics.subscribeToTopic("general", socket, userId, socketId);
   addNewActiveUser(userId);
-  topics.broadcastChange("general"); // use this topic for general or private notification
+  topics.broadcastChange('general','users'); 
 
   socket.on("message", (msg) => {
     console.log(`Message from user ${userId}:`);
     console.log(msg);
     if (msg.split(">>>")[1] == "changed") {
       // some changes happend
-      topics.broadcastChange(msg.split(">>>")[0]);
+      if (msg.split(">>>")[0]=='boards') {
+        topics.broadcastChange('general','boards');
+      } else {
+        topics.broadcastChange(msg.split(">>>")[0]);
+      }
     } else {
       // want to subscribe a topic
       topics.subscribeToTopic(msg.split(">>>")[0], socket, userId, socketId);
@@ -127,7 +145,7 @@ wss.on("connection", (socket, req) => {
       topics.removeSubscription(topic, userId, socketId, socketId);
     });
     removeActiveUser(userId);
-    topics.broadcastChange("general");
+    topics.broadcastChange('general','users');
   });
 });
 
@@ -136,6 +154,3 @@ server.on("upgrade", (req, socket, head) => {
     wss.emit("connection", socket, req);
   });
 });
-
-// a topic needs to be defined as an object with 3 properties: onSubscribe, onChange, onRemove
-// const topic = { general, gameChat, gameGrid, gameHistory }

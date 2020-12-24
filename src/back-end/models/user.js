@@ -45,6 +45,17 @@ function User() {
       });
   };
 
+  // chức năng lấy tất cả user
+  this.getAllUsers = (result) => {
+    UserModel.find()
+      .then((res) => {
+        result(null, res);
+      })
+      .catch((err) => {
+        result(null, err);
+      });
+  };
+
   // Chức năng Register
   this.addUserByCredential = function (credential, result) {
     UserModel.create(

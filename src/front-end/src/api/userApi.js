@@ -72,6 +72,11 @@ const userApi = {
         const url = '/board/make_message?boardId=' + boardId + '&time=' + time + '&content=' + content;
         const response = await axiosClient.get(url);
         return response;
+    },
+    getUsers: async function () {
+        const url = '/users';
+        const response = await axiosClient.get(url);
+        return response;
     }
 }
 

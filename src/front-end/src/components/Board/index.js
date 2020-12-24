@@ -8,27 +8,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import ws from '../../webSocketClient';
 
 const useStyles = makeStyles((theme) => ({
-    // icon: {
-    //     marginRight: theme.spacing(2),
-    // },
-    // footer: {
-    //     backgroundColor: theme.palette.background.paper,
-    //     padding: theme.spacing(6),
-    // },
-    // breadCrumbsBlock: {
-    //     display: 'flex',
-    //     marginLeft: 700,
-    // },
-    // link: {
-    //     display: 'flex',
-    //     marginRight: 10,
-    // },
-    // iconForBreadSrum: {
-    //     marginRight: theme.spacing(0.5),
-    //     width: 20,
-    //     height: 20,
-    // },
-
 }));
 
 const boardSize = 3;
@@ -81,7 +60,9 @@ export default function Board(props) {
                 let arr=topicName.split('>>>')[0];
                 arr=arr.split('-');
                 let topic=arr[arr.length-1];
-                callbacks[topic]();
+                if (callbacks[topic]) {
+                    callbacks[topic]();
+                }
             });
             let topic=`${board.userId1}-${board.userId2}`;
             ws.subscribeTopic(`${topic}-board`);

@@ -1,0 +1,20 @@
+.home-container {
+    display: grid;
+    grid-template-columns: 8fr 2fr;
+}
+
+.users-list {
+    max-height: 90vh;
+    padding: 10px;
+    overflow-y: auto;
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 0;
+}
+
+.user-item {
+    display: flex;
+    border-bottom: 1px solid #dddddd;
+    height: 50px;
+    padding: 5px
+}

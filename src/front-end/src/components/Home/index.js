@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import './index.css';
+import ws from '../../webSocketClient';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
 import { useHistory } from 'react-router-dom';
 import api from '../../api/userApi';
 import {
@@ -39,55 +42,26 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-/* const boards = [
-    {
-        id: 1,
-        board: {
-            boardName: "demo1",
-            user: "Phat Wang"
-        }
-    },
-    {
-        id: 2,
-        board: {
-            boardName: "demo2",
-            user: "Nguyen Nguyen"
-        }
-    },
-    {
-        id: 3,
-        board: {
-            boardName: "demo3",
-            user: "Phan Huy"
-        }
-    },
-    {
-        id: 4,
-        board: {
-            boardName: "demo4",
-            user: "Phat Wang"
-        }
-    },
-] */
-
 const boardsList = boards => (
     boards.map((board) => {
-        // if (error) {
-        //     return <div>Error: {error.message}</div>;
-        // } else if (loading) {
-        //     return <div>Loading...</div>;
-        // } else {
         return (
             <BoardItem key={board.boardId}
                 boardItem={board} />
         );
-        // }
+    })
+);
+
+const usersList = users => (
+    users.map(user => {
+        return (
+            <UserItem key={user.username} user={user} />
+        );
     })
 );
 
 export default function Home() {
     const classes = useStyles();
+    const [users, setUsers] = useState([]);
     const [boards, setBoards] = useState([]);
     const history = useHistory();
 
@@ -99,24 +73,62 @@ export default function Home() {
                 history.push('/signin');
                 return;
             }
+            // set boards list
             setBoards(response);
+            // init web socket client
+            ws.createConnection(localStorage.getItem('username'), (topicName) => {
+                let callbacks = {
+                    general: function () {
+                        let needToRefresh = topicName.split('-')[1];
+                        switch (needToRefresh) {
+                            case "users": {
+                                (async () => {
+                                    let arr = await api.getUsers();
+                                    setUsers(arr);
+                                })();
+                                break;
+                            }
+                            case "boards": {
+                                (async () => {
+                                    let arr = await api.getAllBoards();
+                                    setBoards(arr);
+                                })();
+                                break;
+                            }
+                        }
+                    }
+                };
+                let arr = topicName.split('>>>')[0];
+                arr = arr.split('-');
+                let topic = arr[0];
+                if (callbacks[topic]) {
+                    callbacks[topic]();
+                }
+            });
         })();
     }, []);
 
     return (
         <main>
-            <Container className={classes.cardGrid} maxWidth="md">
-                <Grid container spacing={4}>
-                    <Grid item xs={12} sm={4} md={4}>
-                        <AddBoardDialog callback={setBoards}/>
-                    </Grid>
-                </Grid>
-            </Container>
-            <Container className={classes.cardGrid} maxWidth="md">
-                <Grid container spacing={4}>
-                    {boardsList(boards)}
-                </Grid>
-            </Container>
+            <div className="home-container">
+                <div>
+                    <Container className={classes.cardGrid} maxWidth="md">
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} sm={4} md={4}>
+                                <AddBoardDialog callback={setBoards} />
+                            </Grid>
+                        </Grid>
+                    </Container>
+                    <Container className={classes.cardGrid} maxWidth="md">
+                        <Grid container spacing={4}>
+                            {boardsList(boards)}
+                        </Grid>
+                    </Container>
+                </div>
+                <div className="users-list">
+                    {usersList(users)}
+                </div>
+            </div>
         </main>
     );
 }
@@ -168,6 +180,28 @@ function BoardItem(props) {
     );
 }
 
+function UserItem(props) {
+    const user = props.user;
+
+    let statusColor = (user.isActive ? "#00ff00" : "#aaaaaa");
+
+    return (
+        <div className="user-item">
+            <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
+            <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
+            <div style={{ flexGrow: 1 }}></div>
+            <button 
+                style={{ 
+                    width: "4rem", 
+                    margin: "5px", 
+                    ...(user.username==localStorage.getItem('username') ? {display: "none"} : {}) 
+                }} 
+                disabled={!user.isActive}
+            >Invite</button>
+        </div>
+    );
+}
+
 function AddBoardDialog(props) {
     const [open, setOpen] = React.useState(false);
     const [nameText, setNameText] = React.useState('');
@@ -187,9 +221,8 @@ function AddBoardDialog(props) {
 
     async function createNewBoard(e) {
         handleClose();
-        await api.createBoard(nameText,nameText);
-        let boards = await api.getAllBoards();
-        props.callback(boards);
+        await api.createBoard(nameText, nameText);
+        ws.notifyChange('boards');
     }
 
     return (
