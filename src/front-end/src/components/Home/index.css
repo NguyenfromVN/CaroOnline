@@ -18,3 +18,7 @@
     height: 50px;
     padding: 5px
 }
+
+.user-item:hover {
+    background-color: #eeeeee;
+}
