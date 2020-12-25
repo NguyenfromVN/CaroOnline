@@ -33,14 +33,14 @@ const userApi = {
         let response;
         try {
             response = await axiosClient.get(url);
-        } catch (e){
-            response=e.response.data;
+        } catch (e) {
+            response = e.response.data;
         }
         return response;
     },
     getBoard: async function (boardId) {
         let boards = await this.getAllBoards();
-        if (boards.message){
+        if (boards.message) {
             return boards;
         }
         for (let i = 0; i < boards.length; i++) {
@@ -77,6 +77,16 @@ const userApi = {
         const url = '/users';
         const response = await axiosClient.get(url);
         return response;
+    },
+    getOneUser: async function (username) {
+        let users = await this.getUsers();
+        if (users.message) {
+            return boards;
+        }
+        for (let i = 0; i < users.length; i++) {
+            if (users[i].username == username)
+                return users[i];
+        }
     }
 }
 

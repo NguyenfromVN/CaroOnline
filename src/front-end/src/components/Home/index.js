@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './index.css';
 import ws from '../../webSocketClient';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import api from '../../api/userApi';
 import {
     Grid, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
@@ -186,19 +186,24 @@ function UserItem(props) {
     let statusColor = (user.isActive ? "#00ff00" : "#aaaaaa");
 
     return (
+
         <div className="user-item">
-            <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
-            <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
+            <Link style={{ textDecoration: 'none', color: 'black' }} to={`/detail?user=${user.username}&email=${user.email}`}>
+                <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
+                <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
+            </Link>
             <div style={{ flexGrow: 1 }}></div>
-            <button 
-                style={{ 
-                    width: "4rem", 
-                    margin: "5px", 
-                    ...(user.username==localStorage.getItem('username') ? {display: "none"} : {}) 
-                }} 
+
+            <button
+                style={{
+                    width: "4rem",
+                    margin: "5px",
+                    ...(user.username == localStorage.getItem('username') ? { display: "none" } : {})
+                }}
                 disabled={!user.isActive}
             >Invite</button>
         </div>
+
     );
 }
 
