@@ -20,4 +20,5 @@
 
 .user-item:hover {
     background-color: #eeeeee;
+    cursor: pointer;
 }

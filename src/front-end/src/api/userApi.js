@@ -81,7 +81,7 @@ const userApi = {
     getOneUser: async function (username) {
         let users = await this.getUsers();
         if (users.message) {
-            return boards;
+            return users;
         }
         for (let i = 0; i < users.length; i++) {
             if (users[i].username == username)

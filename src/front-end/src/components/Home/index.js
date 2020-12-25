@@ -152,7 +152,6 @@ function BoardItem(props) {
     return (
         <Grid item xs={12} sm={6} md={4}>
             <Card variant="outlined" className={classes.card}>
-                {/* <Link style={{ textDecoration: 'none', color: 'black' }} to={`/boards/${board.id}`}> */}
                 <CardActionArea>
                     <CardContent className={classes.cardContent}>
                         <Typography gutterBottom variant="h5" component="h2">
@@ -182,25 +181,33 @@ function BoardItem(props) {
 
 function UserItem(props) {
     const user = props.user;
+    const history = useHistory();
 
     let statusColor = (user.isActive ? "#00ff00" : "#aaaaaa");
 
     return (
-        <Link style={{textDecoration: 'none', color: 'inherit'}} to={`/detail?user=${user.username}&email=${user.email}`}>
-            <div className="user-item">
-                <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
-                <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
-                <div style={{ flexGrow: 1 }}></div>
-                <button
-                    style={{
-                        width: "4rem",
-                        margin: "5px",
-                        ...(user.username == localStorage.getItem('username') ? { display: "none" } : {})
-                    }}
-                    disabled={!user.isActive}
-                >Invite</button>
-            </div>
-        </Link>
+        <div
+            className="user-item"
+            onClick={() => {
+                history.push(`/detail?user=${user.username}`);
+            }}
+        >
+            <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
+            <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
+            <div style={{ flexGrow: 1 }}></div>
+            <button
+                style={{
+                    width: "4rem",
+                    margin: "5px",
+                    ...(user.username == localStorage.getItem('username') ? { display: "none" } : {}),
+                    cursor: "pointer"
+                }}
+                disabled={!user.isActive}
+                onClick={e => {
+                    e.stopPropagation();
+                }}
+            >Invite</button>
+        </div>
     );
 }
 

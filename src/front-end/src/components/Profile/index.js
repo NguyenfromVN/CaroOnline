@@ -33,14 +33,29 @@ const useStyles = makeStyles((theme) => ({
 export default function UserProfile() {
     const classes = useStyles();
     const history = useHistory();
+    const [user, setUser] = useState({});
 
-    const username = (new URL(document.location)).searchParams.get('user');
-    const email = (new URL(document.location)).searchParams.get('email');
-    const token = localStorage.getItem("token");
+    // const username = (new URL(document.location)).searchParams.get('user');
+    // const email = (new URL(document.location)).searchParams.get('email');
+    // const token = localStorage.getItem("token");
 
-    if (!token) {
-        history.push('/signin');
-    }
+    useEffect(()=>{
+        const username = (new URL(document.location)).searchParams.get('user');
+        
+        (async ()=>{
+            let response = await api.getOneUser(username);
+            if (response.message) {
+                history.push('/signin');
+                return;
+            }
+            // console.log(response);
+            setUser(response);
+        })();
+    },[]);
+
+    // if (!token) {
+    //     history.push('/signin');
+    // }
 
     function handleSubmit(e) {
         // fetch(`${config.uriPath}/users`, {
@@ -90,7 +105,7 @@ export default function UserProfile() {
                                 name="username"
                                 variant="outlined"
                                 fullWidth
-                                defaultValue={username}
+                                value={user.username || ''}
                                 disabled
                                 id="username"
                                 label="Username"
@@ -103,7 +118,7 @@ export default function UserProfile() {
                                 variant="outlined"
                                 required
                                 fullWidth
-                                defaultValue={email}
+                                value={user.email || ''}
                                 disabled
                                 id="email"
                                 label="Email"
