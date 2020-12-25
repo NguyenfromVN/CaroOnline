@@ -40,17 +40,17 @@ ggLogin(passport);
 const activeUsers = {};
 
 // API to get users list
-app.get('/users',(req,res)=>{
+app.get('/users', (req, res) => {
   User.getAllUsers(function (err, users) {
     if (err) {
       res.send(err);
       return;
     }
-    let arr=[];
+    let arr = [];
     users.forEach(user => {
-      arr.push({username: user.username, isActive: false});
+      arr.push({ username: user.username, isActive: false, email: user.email });
       if (activeUsers[user.username]) {
-        arr[arr.length - 1].isActive=true;
+        arr[arr.length - 1].isActive = true;
       }
     });
     res.json(arr);
@@ -100,7 +100,7 @@ const topics = (() => {
     for (let userId in topics[topicName]) {
       for (let socketId in topics[topicName][userId]) {
         let socket = topics[topicName][userId][socketId];
-        socket.send(`${topicName+(subTopic ? '-'+subTopic : '')}>>>has new update`);
+        socket.send(`${topicName + (subTopic ? '-' + subTopic : '')}>>>has new update`);
       }
     }
   }
@@ -120,15 +120,15 @@ wss.on("connection", (socket, req) => {
   let socketId = Math.random();
   topics.subscribeToTopic("general", socket, userId, socketId);
   addNewActiveUser(userId);
-  topics.broadcastChange('general','users'); 
+  topics.broadcastChange('general', 'users');
 
   socket.on("message", (msg) => {
     console.log(`Message from user ${userId}:`);
     console.log(msg);
     if (msg.split(">>>")[1] == "changed") {
       // some changes happend
-      if (msg.split(">>>")[0]=='boards') {
-        topics.broadcastChange('general','boards');
+      if (msg.split(">>>")[0] == 'boards') {
+        topics.broadcastChange('general', 'boards');
       } else {
         topics.broadcastChange(msg.split(">>>")[0]);
       }
@@ -145,7 +145,7 @@ wss.on("connection", (socket, req) => {
       topics.removeSubscription(topic, userId, socketId, socketId);
     });
     removeActiveUser(userId);
-    topics.broadcastChange('general','users');
+    topics.broadcastChange('general', 'users');
   });
 });
 
