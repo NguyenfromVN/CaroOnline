@@ -1,0 +1,24 @@
+.link {
+    font: bold 15px 'Courier New', Courier, monospace;
+}
+
+.facebook-login-image {
+    width: 100px;
+    height: 100px;
+}
+
+.google-login-image {
+    width: 100px;
+    height: 100px;
+}
+
+.social-button {
+    background: transparent;
+    border: none;
+    width: 125px;
+    height: 100px;
+}
+
+.social-button:hover {
+    cursor: pointer;
+}

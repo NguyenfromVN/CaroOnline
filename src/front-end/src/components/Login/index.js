@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Avatar, Button, CssBaseline, TextField, Typography, makeStyles, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import './index.css';
 import api from '../../api/userApi';
+import facebookImg from '../../images/facebook.png';
+import googleImg from '../../images/google.png';
 
 const useStyles = makeStyles((theme) => ({
     paper: {
@@ -111,6 +114,14 @@ export default function Login(props) {
                     >
                         Sign In
                     </Button>
+                    <div className='link'>
+                        <button className='social-button' onClick={() => { window.location.href = 'http://localhost:3001/auth/fb' }}>
+                            <img src={facebookImg} className='facebook-login-image' alt='facebook-img'></img>
+                        </button>
+                        <button className='social-button' onClick={() => { window.location.href = 'http://localhost:3001/auth/google' }}>
+                            <img src={googleImg} className='google-login-image' alt='google-img'></img>
+                        </button>
+                    </div>
                 </form>
             </div>
         </Container>
