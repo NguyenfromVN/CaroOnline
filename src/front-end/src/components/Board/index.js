@@ -26,6 +26,7 @@ const renderSquare = (props) => {
 export default function Board(props) {
     const [board, setBoard] = useState({});
     const [chat, setChat] = useState([]);
+    const [isPlayer, setIsPlayer] = useState(false);
     const boardId = (new URL(document.location)).searchParams.get('id');
     const history = useHistory();
     const classes = useStyles();
@@ -39,6 +40,9 @@ export default function Board(props) {
                 return;
             }
             setBoard(board);
+            // set isPlayer
+            let username = localStorage.getItem('username');
+            setIsPlayer(username == board.userId1 || username == board.userId2);
             // get chat
             let chat = await api.getBoardChat(boardId);
             setChat(chat);
@@ -71,6 +75,9 @@ export default function Board(props) {
     }, []);
 
     async function takeTurn(row, col) {
+        if (!isPlayer){
+            return;
+        }
         await api.takeTurn(boardId, row, col);
         ws.notifyChange(`${board.userId1}-${board.userId2}-board`);
         let newBoard = await api.getBoard(boardId);
@@ -110,7 +117,14 @@ export default function Board(props) {
                 <div >
                     {renderSquares()}
                 </div>
-                <Chat boardId={boardId} chat={chat} topicName={`${board.userId1}-${board.userId2}-chat`} />
+                <Chat 
+                    boardId={boardId} 
+                    participant1={board.userId1}
+                    participant2={board.userId2} 
+                    isPlayer={isPlayer}
+                    chat={chat} 
+                    topicName={`${board.userId1}-${board.userId2}-chat`} 
+                />
             </div>
         </div>
     );

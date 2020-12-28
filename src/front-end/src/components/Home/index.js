@@ -139,7 +139,7 @@ export default function Home() {
                     <Container className={classes.cardGrid} maxWidth="md">
                         <Grid container spacing={4}>
                             <Grid item xs={12} sm={4} md={4}>
-                                <Paper variant="outlined">
+                                <Paper variant="outlined" style={{display: 'flex'}}>
                                     <InputBase
                                         className={classes.input}
                                         placeholder="Join game by id/key"
@@ -179,21 +179,14 @@ function BoardItem(props) {
     const board = props.boardItem;
     const history = useHistory();
 
-    async function joinGame() {
-        if (!board.userId1 || !board.userId2) {
-            // join game
-            if (board.userId1 != localStorage.getItem('username') && board.userId2 != localStorage.getItem('username'))
-                await api.joinBoard(board.boardId);
-        } else if (board.userId1 && board.userId2)
-            if (board.userId1 != localStorage.getItem('username') && board.userId2 != localStorage.getItem('username'))
-                return;
+    async function viewGame() {
         history.push(`/board?id=${board.boardId}`);
     }
 
     return (
         <Grid item xs={12} sm={6} md={4}>
             <Card variant="outlined" className={classes.card}>
-                <CardActionArea>
+                <CardActionArea style={{flexGrow: 1}}>
                     <CardContent className={classes.cardContent}>
                         <Typography gutterBottom variant="h5" component="h2">
                             {board.name}
@@ -211,8 +204,8 @@ function BoardItem(props) {
                 </CardActionArea>
                 {/* </Link> */}
                 <CardActions >
-                    <Button variant="outlined" color="primary" onClick={joinGame}>
-                        JOIN GAME
+                    <Button variant="outlined" color="primary" onClick={viewGame}>
+                        VIEW GAME
                 </Button>
                 </CardActions>
             </Card>
@@ -276,7 +269,7 @@ function AddBoardDialog(props) {
     }
 
     return (
-        <div>
+        <div style={{position: 'absolute'}}>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 Create game
             </Button>

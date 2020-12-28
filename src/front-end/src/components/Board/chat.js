@@ -33,7 +33,7 @@ const Chat = (props) => {
                     <div key={chat[i].time} className='message-tag-left'>
                         <div
                             style={{
-                                backgroundColor: "#cccccc", 
+                                backgroundColor: (chat[i].from==props.participant1 || chat[i].from==props.participant2 ? "#c7ffba" : "#dddddd"), 
                                 borderRadius: "5px",
                                 margin: "10px",
                                 boxSizing: "border-box",
@@ -41,7 +41,8 @@ const Chat = (props) => {
                                 padding: "10px"
                             }}
                         >
-                            {chat[i].content}
+                            <div style={{fontSize: "0.75em"}}>{chat[i].from}:</div>
+                            <div>{chat[i].content}</div>
                         </div>
                     </div>
                 );
