@@ -78,10 +78,15 @@ export default function Board(props) {
         if (!isPlayer){
             return;
         }
+        // make the turn at client while waiting for response from server
+        let boardCopy = JSON.parse(JSON.stringify(board));
+        let current = JSON.parse(JSON.stringify(board.history[board.history.length-1]));
+        boardCopy.history.push(current);
+        current.squares[row*boardSize+col]=(board.userId1==localStorage.getItem('username') ? 'X' : 'O');
+        setBoard(boardCopy);
+        console.log(boardCopy);
         await api.takeTurn(boardId, row, col);
         ws.notifyChange(`${board.userId1}-${board.userId2}-board`);
-        let newBoard = await api.getBoard(boardId);
-        setBoard(newBoard);
     }
 
     function renderSquares() {
