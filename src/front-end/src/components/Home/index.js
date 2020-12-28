@@ -2,15 +2,29 @@ import React, { useEffect, useState } from 'react';
 import './index.css';
 import ws from '../../webSocketClient';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { useHistory, Link } from 'react-router-dom';
 import api from '../../api/userApi';
 import {
     Grid, Container, Button, TextField, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
-    Card, CardActionArea, CardActions, CardContent, Typography
+    Card, CardActionArea, CardActions, CardContent, Typography, Paper, InputBase, IconButton
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
+    root: {
+        padding: '2px 4px',
+        display: 'flex',
+        alignItems: 'center',
+        width: 400,
+    },
+    input: {
+        marginLeft: theme.spacing(1),
+        flex: 1,
+    },
+    iconButton: {
+        padding: 10,
+    },
     icon: {
         marginRight: theme.spacing(2),
     },
@@ -63,6 +77,7 @@ export default function Home() {
     const classes = useStyles();
     const [users, setUsers] = useState([]);
     const [boards, setBoards] = useState([]);
+    const [searchedBoardIdText, setSearchedBoardIdText] = useState('');
     const history = useHistory();
 
     useEffect(() => {
@@ -108,11 +123,37 @@ export default function Home() {
         })();
     }, []);
 
+    const handleJoinGameById = async () => {
+        if (await api.getBoard(searchedBoardIdText)) {
+            history.push(`/board?id=${searchedBoardIdText}`)
+            window.alert('Join game successfully!');
+        } else {
+            window.alert('Failed');
+        }
+    }
+
     return (
         <main>
             <div className="home-container">
                 <div>
                     <Container className={classes.cardGrid} maxWidth="md">
+                        <Grid container spacing={4}>
+                            <Grid item xs={12} sm={4} md={4}>
+                                <Paper variant="outlined">
+                                    <InputBase
+                                        className={classes.input}
+                                        placeholder="Join game by id/key"
+                                        inputProps={{ 'aria-label': 'join game by key' }}
+                                        onChange={(e) => {
+                                            setSearchedBoardIdText(e.target.value)
+                                        }}
+                                    />
+                                    <IconButton onClick={handleJoinGameById} className={classes.iconButton} aria-label="join">
+                                        <ArrowForwardIcon />
+                                    </IconButton>
+                                </Paper>
+                            </Grid>
+                        </Grid>
                         <Grid container spacing={4}>
                             <Grid item xs={12} sm={4} md={4}>
                                 <AddBoardDialog callback={setBoards} />
@@ -237,7 +278,7 @@ function AddBoardDialog(props) {
     return (
         <div>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-                New game
+                Create game
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Create game</DialogTitle>
