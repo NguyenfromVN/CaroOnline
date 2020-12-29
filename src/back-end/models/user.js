@@ -45,6 +45,19 @@ function User() {
       });
   };
 
+  this.getUserByUsername = function (username, result) {
+    UserModel.find({
+      username, // search query
+    })
+      .then((res) => {
+        console.log(res, "res");
+        result(null, res);
+      })
+      .catch((err) => {
+        console.log(err, "err");
+        result(null, err);
+      });
+  };
   // chức năng lấy tất cả user
   this.getAllUsers = (result) => {
     UserModel.find()

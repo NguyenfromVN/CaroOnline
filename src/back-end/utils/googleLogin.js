@@ -11,7 +11,6 @@ module.exports = function (passport) {
         profileFields: ["email", "name"],
       },
       function (accessToken, refreshToken, profile, done) {
-        console.log(accessToken, refreshToken, profile);
         const { name, email } = profile._json;
         userModel.Model.findOne({ username: name }, (err, user) => {
           if (err) return done(err);

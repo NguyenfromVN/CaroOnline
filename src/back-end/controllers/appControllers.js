@@ -26,6 +26,27 @@ exports.get_user_by_credential = function (req, res) {
   });
 };
 
+exports.get_user_by_username = function (req, res) {
+  User.getUserByUsername(req.params.username, function (err, user) {
+    if (err) {
+      res.send(err);
+      return;
+    }
+    if (user.length <= 0) {
+      res.status(401).send({ message: "Invalid" });
+      return;
+    }
+    user = JSON.parse(JSON.stringify(user[0]));
+    if (!user.isValidated) {
+      res.status(401).send({ message: "Account is not validated" });
+      return;
+    }
+    res.json({
+      user: user,
+    });
+  });
+};
+
 exports.add_user_by_credential = function (req, res) {
   User.addUserByCredential(req.body, function (err, user) {
     if (err) res.send(err);

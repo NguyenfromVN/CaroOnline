@@ -3,6 +3,7 @@ const express = require("express");
 const protectedRoutes = express.Router();
 const jsonwebtoken = require("jsonwebtoken");
 const config = require("../config");
+const url = require("url");
 
 module.exports = function (app, passport) {
   var controller = require("../controllers/appControllers");
@@ -42,6 +43,8 @@ module.exports = function (app, passport) {
   protectedRoutes.get("/make_message", controller.make_message);
 
   // user Routes
+  app.route("/user/:username").get(controller.get_user_by_username);
+
   app.route("/login").post(controller.get_user_by_credential);
   app.route("/register").post(controller.add_user_by_credential);
   app.route("/validate/:username").post(controller.validate_user);
@@ -54,7 +57,10 @@ module.exports = function (app, passport) {
       failureRedirect: `${config.FRONTEND_HOST}/error`,
     }),
     (req, res) => {
-      res.send(`success`);
+      res.json({
+        user: req.user,
+        token: jsonwebtoken.sign({ user: req.user }, "RESTFULAPIs"),
+      });
     }
   );
 
@@ -66,8 +72,15 @@ module.exports = function (app, passport) {
     "/auth/google/callback",
     passport.authenticate("google", { failureRedirect: "/error" }),
     function (req, res) {
-      // Successful authentication, redirect success.
-      res.send(`success`);
+      res.redirect(
+        url.format({
+          pathname: "http://localhost:3000/google",
+          query: {
+            user: req.user.username,
+            token: jsonwebtoken.sign({ user: req.user }, "RESTFULAPIs"),
+          },
+        })
+      );
     }
   );
 };
