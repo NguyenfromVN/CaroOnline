@@ -12,6 +12,7 @@ import Board from './components/Board';
 import CheckMail from './components/CheckMail';
 import MailValidate from './components/MailValidate';
 import Profile from './components/Profile';
+import Google from './components/Google';
 
 function Copyright() {
     return (
@@ -146,6 +147,7 @@ function App() {
                             <Route path='/check-mail' exact component={CheckMail} />
                             <Route path='/validate' exact component={MailValidate} />
                             <Route path='/detail' exact component={Profile} />
+                            <Route path='/google' exact component={Google} />
                         </Switch>
                     </main>
                     {/* Footer */}
