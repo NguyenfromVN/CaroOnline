@@ -84,7 +84,6 @@ export default function Board(props) {
         boardCopy.history.push(current);
         current.squares[row*boardSize+col]=(board.userId1==localStorage.getItem('username') ? 'X' : 'O');
         setBoard(boardCopy);
-        console.log(boardCopy);
         await api.takeTurn(boardId, row, col);
         ws.notifyChange(`${board.userId1}-${board.userId2}-board`);
     }

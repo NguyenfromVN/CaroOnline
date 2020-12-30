@@ -116,7 +116,7 @@ wss.on("connection", (socket, req) => {
   // each user can have more than one connection, each connection will be identified by a random number
   // each connection can have a lot of following topics, so use an array to store these
   let topicsList = ['general']; // by default, every connection subscribes to "general" topic, for general notification
-  let userId = req.url.split("?")[1].split("=")[1];
+  let userId = decodeURI(req.url.split("?")[1].split("=")[1]);
   let socketId = Math.random();
   topics.subscribeToTopic("general", socket, userId, socketId);
   addNewActiveUser(userId);

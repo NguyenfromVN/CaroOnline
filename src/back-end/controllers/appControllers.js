@@ -37,13 +37,7 @@ exports.get_user_by_username = function (req, res) {
       return;
     }
     user = JSON.parse(JSON.stringify(user[0]));
-    if (!user.isValidated) {
-      res.status(401).send({ message: "Account is not validated" });
-      return;
-    }
-    res.json({
-      user: user,
-    });
+    res.json(user);
   });
 };
 

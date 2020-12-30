@@ -78,15 +78,10 @@ const userApi = {
         const response = await axiosClient.get(url);
         return response;
     },
-    getOneUser: async function (username) {
-        let users = await this.getUsers();
-        if (users.message) {
-            return users;
-        }
-        for (let i = 0; i < users.length; i++) {
-            if (users[i].username == username)
-                return users[i];
-        }
+    getUserByUsername: async function (username) {
+        const url = `/user/${username}`;
+        const response = await axiosClient.get(url);
+        return response;
     }
 }
 

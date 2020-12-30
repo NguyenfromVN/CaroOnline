@@ -43,12 +43,11 @@ export default function UserProfile() {
         const username = (new URL(document.location)).searchParams.get('user');
         
         (async ()=>{
-            let response = await api.getOneUser(username);
+            let response = await api.getUserByUsername(username);
             if (response.message) {
                 history.push('/signin');
                 return;
             }
-            // console.log(response);
             setUser(response);
         })();
     },[]);

@@ -22,7 +22,7 @@ function Board() {
     const currentBoard = await getBoard(boardId);
     result(
       null,
-      currentBoard.history[stepNum | (currentBoard.history.length - 1)]
+      currentBoard.history[stepNum || (currentBoard.history.length - 1)]
     );
   };
 
@@ -165,6 +165,7 @@ const calculateWinner = (squares, row, col, player) => {
   let count = 0;
   let tempRow = row;
   let tempCol = col;
+  count=1;
   while (tempCol - 1 >= 0 && squares[tempRow * 20 + (tempCol - 1)] === player) {
     count++;
     tempCol--;
@@ -181,7 +182,7 @@ const calculateWinner = (squares, row, col, player) => {
   if (count === 4) {
     return true;
   }
-  count = 0;
+  count = 1;
 
   while (tempRow - 1 >= 0 && squares[(tempRow - 1) * 20 + tempCol] === player) {
     count++;
@@ -199,7 +200,7 @@ const calculateWinner = (squares, row, col, player) => {
   if (count === 4) {
     return true;
   }
-  count = 0;
+  count = 1;
 
   while (
     tempRow + 1 <= 19 &&
@@ -223,12 +224,11 @@ const calculateWinner = (squares, row, col, player) => {
   }
   tempRow = row;
   tempCol = col;
-  console.log(count);
 
   if (count === 4) {
     return true;
   }
-  count = 0;
+  count = 1;
 
   while (
     tempRow + 1 <= 19 &&
