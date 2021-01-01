@@ -26,6 +26,14 @@ function Board() {
     );
   };
 
+  this.getBoardbyId = async function (boardId, result) {
+    const currentBoard = await getBoard(boardId);
+    result(
+      null,
+      currentBoard
+    );
+  };
+
   this.joinBoard = function (boardId, userId2, result) {
     BoardModel.updateOne({ boardId }, { userId2 }, (err, res) => {
       if (err) return result(null, err);
@@ -33,7 +41,7 @@ function Board() {
     });
   };
 
-  this.makeTurn = async function (boardId, row, col, result) {
+  this.makeTurn = async function (boardId, row, col,username, result) {
     row = parseInt(row);
     col = parseInt(col);
     const currentBoard = await getBoard(boardId);
@@ -46,6 +54,7 @@ function Board() {
     let history = currentBoard.history.slice(0, newStepNum);
     const current = JSON.parse(JSON.stringify(history[history.length - 1]));
     const position = row * 20 + col;
+
     current.squares[position] =
       currentBoard.nextTurn === currentBoard.userId1 ? "X" : "O";
 
@@ -182,7 +191,7 @@ const calculateWinner = (squares, row, col, player) => {
   if (count === 4) {
     return true;
   }
-  count = 1;
+  count = 0;
 
   while (tempRow - 1 >= 0 && squares[(tempRow - 1) * 20 + tempCol] === player) {
     count++;
@@ -200,7 +209,7 @@ const calculateWinner = (squares, row, col, player) => {
   if (count === 4) {
     return true;
   }
-  count = 1;
+  count = 0;
 
   while (
     tempRow + 1 <= 19 &&
@@ -224,11 +233,10 @@ const calculateWinner = (squares, row, col, player) => {
   }
   tempRow = row;
   tempCol = col;
-
   if (count === 4) {
     return true;
   }
-  count = 1;
+  count = 0;
 
   while (
     tempRow + 1 <= 19 &&

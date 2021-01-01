@@ -32,6 +32,7 @@ module.exports = function (app, passport) {
 
   app.use("/board", protectedRoutes);
 
+  protectedRoutes.get("/get_board/:id", controller.get_board_by_id);
   protectedRoutes.get("/get_grid", controller.get_grid);
   protectedRoutes.get("/join_board", controller.join_board);
   protectedRoutes.get("/make_turn", controller.make_turn);

@@ -63,6 +63,14 @@ exports.get_grid = function (req, res) {
   });
 };
 
+exports.get_board_by_id = function (req, res) {
+  const boardId = req.params.id;
+  Board.getBoardbyId(boardId, function (err, board) {
+    if (err) res.send(err);
+    res.send(board);
+  });
+};
+
 exports.join_board = function (req, res) {
   const { boardId } = req.query;
   Board.joinBoard(boardId, req.user.username, function (err, grid) {
@@ -73,7 +81,7 @@ exports.join_board = function (req, res) {
 
 exports.make_turn = function (req, res) {
   const { boardId, row, col } = req.query;
-  Board.makeTurn(boardId, row, col, function (err, board) {
+  Board.makeTurn(boardId, row, col,req.user.username, function (err, board) {
     if (err) res.send(err);
     res.json(board);
   });
