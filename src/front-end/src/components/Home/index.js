@@ -128,16 +128,25 @@ export default function Home() {
         const boardResponse = await api.getBoard(boardId);
         if (boardResponse._id) {
             const username = localStorage.getItem("username");
-            if (!boardResponse.userId2 && username != boardResponse.userId1) {
-                await api.joinBoard(boardId);
+            if (username==boardResponse.userId1){
+                alert('You are already the owner of this game!');
                 history.push(`/board?id=${boardId}`);
-                alert("You have successfully joined game as a second player. Have your great time!");
             } else {
-                history.push(`/board?id=${boardId}`);
-                alert("Game is full. You have joined game as a spectator. You can chat with other players.");
+                if (!boardResponse.userId2) {
+                    await api.joinBoard(boardId);
+                    history.push(`/board?id=${boardId}`);
+                    alert("You have successfully joined the game as the second player. Play your best!");    
+                } else {
+                    history.push(`/board?id=${boardId}`);
+                    if (boardResponse.userId2==username){
+                        alert("You already joined this game as a player!");    
+                    } else {
+                        alert("This game is full. You have joined the game as a spectator. Enjoy the match!");
+                    }    
+                }
             }
         } else {
-            alert("There is no room match your search. Please try again!");
+            alert("There is no game to match your search. Please try again!");
         }
     }
 
