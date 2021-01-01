@@ -97,14 +97,14 @@ function Board() {
     };
     let checkDuplicate = await getBoard(boardId);
     if (checkDuplicate) {
-      result(null, "err");
+      result(null, "Board name is duplicated");
       return;
     }
     BoardModel.create(data, function (err, res) {
       if (err) {
-        return result(null, err);
+        return result(null, "An error happened!");
       }
-      result(null, res);
+      result(null, "Success");
     });
   };
 

@@ -273,7 +273,11 @@ function AddBoardDialog(props) {
 
     async function createNewBoard(e) {
         handleClose();
-        await api.createBoard(nameText, nameText);
+        const response=await api.createBoard(nameText, nameText);
+        if (response!='Success'){
+            alert(response);
+            return;
+        }
         ws.notifyChange('boards');
     }
 
