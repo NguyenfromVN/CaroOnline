@@ -88,6 +88,7 @@ function Board() {
       boardId,
       name,
       userId1,
+      nextTurn: userId1,
       history: [
         {
           squares,

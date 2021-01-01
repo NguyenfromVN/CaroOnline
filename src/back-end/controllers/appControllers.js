@@ -65,14 +65,7 @@ exports.get_grid = function (req, res) {
 exports.get_board_by_id = function (req, res) {
   const boardId = req.params.id;
   Board.getBoardbyId(boardId, function (err, board) {
-<<<<<<< Updated upstream
-    if (err) {
-      res.send(err);
-      return;
-    }
-=======
     if (err) return res.send(err);
->>>>>>> Stashed changes
     res.send(board);
   });
 };
