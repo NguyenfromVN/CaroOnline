@@ -7,8 +7,7 @@ const jwt = require("jsonwebtoken");
 exports.get_user_by_credential = function (req, res) {
   User.getUserByCredential(req.body, function (err, user) {
     if (err) {
-      res.send(err);
-      return;
+      return res.send(err);
     }
     if (user.length <= 0) {
       res.status(401).send({ message: "Invalid" });
@@ -43,14 +42,14 @@ exports.get_user_by_username = function (req, res) {
 
 exports.add_user_by_credential = function (req, res) {
   User.addUserByCredential(req.body, function (err, user) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.json(user);
   });
 };
 
 exports.validate_user = (req, res) => {
   User.validateUser(req.params.username, function (err, user) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.send(user);
   });
 };
@@ -58,7 +57,7 @@ exports.validate_user = (req, res) => {
 exports.get_grid = function (req, res) {
   const { boardId, stepNum } = req.query;
   Board.getGrid(boardId, stepNum, function (err, grid) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.send(grid);
   });
 };
@@ -66,10 +65,14 @@ exports.get_grid = function (req, res) {
 exports.get_board_by_id = function (req, res) {
   const boardId = req.params.id;
   Board.getBoardbyId(boardId, function (err, board) {
+<<<<<<< Updated upstream
     if (err) {
       res.send(err);
       return;
     }
+=======
+    if (err) return res.send(err);
+>>>>>>> Stashed changes
     res.send(board);
   });
 };
@@ -77,15 +80,15 @@ exports.get_board_by_id = function (req, res) {
 exports.join_board = function (req, res) {
   const { boardId } = req.query;
   Board.joinBoard(boardId, req.user.username, function (err, grid) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.send(grid);
   });
 };
 
 exports.make_turn = function (req, res) {
   const { boardId, row, col } = req.query;
-  Board.makeTurn(boardId, row, col,req.user.username, function (err, board) {
-    if (err) res.send(err);
+  Board.makeTurn(boardId, row, col, function (err, board) {
+    if (err) return res.send(err);
     res.json(board);
   });
 };
@@ -94,9 +97,7 @@ exports.create_board = function (req, res) {
   const { name, boardId } = req.query;
   Board.createBoard(boardId, name, req.user.username, function (err, board) {
     if (err) {
-      res.send(err);
-      return;
-    }
+      return res.send(err);    }
     res.json(board);
   });
 };
@@ -104,14 +105,14 @@ exports.create_board = function (req, res) {
 exports.force_win = function (req, res) {
   const { boardId } = req.body;
   Board.forceWin(boardId, req.user.username, function (err, board) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.json(board);
   });
 };
 
 exports.get_all_boards = function (req, res) {
   Board.getAllBoards(function (err, board) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.json(board);
   });
 };
@@ -119,7 +120,7 @@ exports.get_all_boards = function (req, res) {
 exports.get_board_chat = function (req, res) {
   const { boardId } = req.query;
   Board.getBoardChat(boardId, function (err, board) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.json(board);
   });
 };
@@ -127,7 +128,7 @@ exports.get_board_chat = function (req, res) {
 exports.get_board_history = function (req, res) {
   const { boardId } = req.query;
   Board.getBoardHistory(boardId, req.user.username, function (err, board) {
-    if (err) res.send(err);
+    if (err) return res.send(err);
     res.json(board);
   });
 };
@@ -140,7 +141,7 @@ exports.make_message = function (req, res) {
     content,
     req.user.username,
     function (err, board) {
-      if (err) res.send(err);
+      if (err) return res.send(err);
       res.json(board);
     }
   );

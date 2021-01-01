@@ -22,16 +22,13 @@ function Board() {
     const currentBoard = await getBoard(boardId);
     result(
       null,
-      currentBoard.history[stepNum || (currentBoard.history.length - 1)]
+      currentBoard.history[stepNum || currentBoard.history.length - 1]
     );
   };
 
   this.getBoardbyId = async function (boardId, result) {
     const currentBoard = await getBoard(boardId);
-    result(
-      null,
-      currentBoard
-    );
+    result(null, currentBoard);
   };
 
   this.joinBoard = function (boardId, userId2, result) {
@@ -41,7 +38,7 @@ function Board() {
     });
   };
 
-  this.makeTurn = async function (boardId, row, col,username, result) {
+  this.makeTurn = async function (boardId, row, col, result) {
     row = parseInt(row);
     col = parseInt(col);
     const currentBoard = await getBoard(boardId);
@@ -57,10 +54,14 @@ function Board() {
 
     current.squares[position] =
       currentBoard.nextTurn === currentBoard.userId1 ? "X" : "O";
-
-    if (calculateWinner(current.squares, row, col, current.squares[position])) {
+    const winnerCheck = calculateWinner(
+      current.squares,
+      row,
+      col,
+      current.squares[position]
+    );
+    if (winnerCheck.win) {
       newWinner = currentBoard.nextTurn;
-      console.log("winner", newWinner);
     }
 
     history = history.concat(current);
@@ -75,7 +76,7 @@ function Board() {
       },
       (err, res) => {
         if (err) return result(null, err);
-        result(null, res);
+        result(null, { winnerCheck, winner: newWinner });
       }
     );
   };
@@ -174,10 +175,12 @@ const calculateWinner = (squares, row, col, player) => {
   let count = 0;
   let tempRow = row;
   let tempCol = col;
-  count=1;
+  let winLine = [{ tempCol, tempRow }];
+
   while (tempCol - 1 >= 0 && squares[tempRow * 20 + (tempCol - 1)] === player) {
     count++;
     tempCol--;
+    winLine.push({ tempCol, tempRow });
   }
   tempCol = col;
   while (
@@ -186,16 +189,21 @@ const calculateWinner = (squares, row, col, player) => {
   ) {
     count++;
     tempCol++;
+    winLine.push({ tempCol, tempRow });
   }
   tempCol = col;
   if (count === 4) {
-    return true;
+    return {
+      win: true,
+      winLine,
+    };
   }
   count = 0;
-
+  winLine = [{ tempCol, tempRow }];
   while (tempRow - 1 >= 0 && squares[(tempRow - 1) * 20 + tempCol] === player) {
     count++;
     tempRow--;
+    winLine.push({ tempCol, tempRow });
   }
   tempRow = row;
   while (
@@ -204,13 +212,17 @@ const calculateWinner = (squares, row, col, player) => {
   ) {
     count++;
     tempRow++;
+    winLine.push({ tempCol, tempRow });
   }
   tempRow = row;
   if (count === 4) {
-    return true;
+    return {
+      win: true,
+      winLine,
+    };
   }
   count = 0;
-
+  winLine = [{ tempCol, tempRow }];
   while (
     tempRow + 1 <= 19 &&
     tempCol - 1 >= 0 &&
@@ -219,6 +231,7 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow++;
     tempCol--;
+    winLine.push({ tempCol, tempRow });
   }
   tempRow = row;
   tempCol = col;
@@ -230,14 +243,18 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow--;
     tempCol++;
+    winLine.push({ tempCol, tempRow });
   }
   tempRow = row;
   tempCol = col;
   if (count === 4) {
-    return true;
+    return {
+      win: true,
+      winLine,
+    };
   }
   count = 0;
-
+  winLine = [{ tempCol, tempRow }];
   while (
     tempRow + 1 <= 19 &&
     tempCol + 1 <= 19 &&
@@ -246,6 +263,7 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow++;
     tempCol++;
+    winLine.push({ tempCol, tempRow });
   }
   tempRow = row;
   tempCol = col;
@@ -257,13 +275,20 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow--;
     tempCol--;
+    winLine.push({ tempCol, tempRow });
   }
   tempRow = row;
   tempCol = col;
   if (count === 4) {
-    return true;
+    return {
+      win: true,
+      winLine,
+    };
   }
-  return false;
+  return {
+    win: false,
+    winLine: [],
+  };
 };
 
 module.exports = new Board();
