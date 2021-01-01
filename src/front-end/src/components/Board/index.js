@@ -75,14 +75,22 @@ export default function Board(props) {
     }, []);
 
     async function takeTurn(row, col) {
-        if (!isPlayer){
+        if (!isPlayer) {
+            return;
+        }
+        // check if the cell is empty
+        if (board.history[board.history.length - 1].squares[boardSize * row + col]) {
+            return;
+        }
+        // check if this is your turn or not
+        if (board.nextTurn != localStorage.getItem('username')) {
             return;
         }
         // make the turn at client while waiting for response from server
         let boardCopy = JSON.parse(JSON.stringify(board));
-        let current = JSON.parse(JSON.stringify(board.history[board.history.length-1]));
+        let current = JSON.parse(JSON.stringify(board.history[board.history.length - 1]));
         boardCopy.history.push(current);
-        current.squares[row*boardSize+col]=(board.userId1==localStorage.getItem('username') ? 'X' : 'O');
+        current.squares[row * boardSize + col] = (board.userId1 == localStorage.getItem('username') ? 'X' : 'O');
         setBoard(boardCopy);
         await api.takeTurn(boardId, row, col);
         ws.notifyChange(`${board.userId1}-${board.userId2}-board`);
@@ -121,13 +129,13 @@ export default function Board(props) {
                 <div >
                     {renderSquares()}
                 </div>
-                <Chat 
-                    boardId={boardId} 
+                <Chat
+                    boardId={boardId}
                     participant1={board.userId1}
-                    participant2={board.userId2} 
+                    participant2={board.userId2}
                     isPlayer={isPlayer}
-                    chat={chat} 
-                    topicName={`${board.userId1}-${board.userId2}-chat`} 
+                    chat={chat}
+                    topicName={`${board.userId1}-${board.userId2}-chat`}
                 />
             </div>
         </div>
