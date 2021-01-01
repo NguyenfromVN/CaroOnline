@@ -39,14 +39,14 @@ const userApi = {
         return response;
     },
     getBoard: async function (boardId) {
-        let boards = await this.getAllBoards();
-        if (boards.message) {
-            return boards;
+        const url = '/board/get_board/'+boardId;
+        let response;
+        try {
+            response = await axiosClient.get(url);
+        } catch (e) {
+            response = e.response.data;
         }
-        for (let i = 0; i < boards.length; i++) {
-            if (boards[i].boardId == boardId)
-                return boards[i];
-        }
+        return response;
     },
     takeTurn: async function (boardId, row, col) {
         const url = `/board/make_turn?boardId=${boardId}&row=${row}&col=${col}`;

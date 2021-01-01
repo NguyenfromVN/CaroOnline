@@ -66,7 +66,10 @@ exports.get_grid = function (req, res) {
 exports.get_board_by_id = function (req, res) {
   const boardId = req.params.id;
   Board.getBoardbyId(boardId, function (err, board) {
-    if (err) res.send(err);
+    if (err) {
+      res.send(err);
+      return;
+    }
     res.send(board);
   });
 };
