@@ -124,11 +124,20 @@ export default function Home() {
     }, []);
 
     const handleJoinGameById = async () => {
-        if (await api.getBoard(searchedBoardIdText)) {
-            history.push(`/board?id=${searchedBoardIdText}`)
-            window.alert('Join game successfully!');
+        const boardId = searchedBoardIdText;
+        const boardResponse = await api.getBoard(boardId);
+        if (boardResponse._id) {
+            const username = localStorage.getItem("username");
+            if (!boardResponse.userId2 && username != boardResponse.userId1) {
+                await api.joinBoard(boardId);
+                history.push(`/board?id=${boardId}`);
+                alert("You have successfully joined game as a second player. Have your great time!");
+            } else {
+                history.push(`/board?id=${boardId}`);
+                alert("Game is full. You have joined game as a spectator. You can chat with other players.");
+            }
         } else {
-            window.alert('Failed');
+            alert("There is no room match your search. Please try again!");
         }
     }
 
@@ -139,7 +148,7 @@ export default function Home() {
                     <Container className={classes.cardGrid} maxWidth="md">
                         <Grid container spacing={4}>
                             <Grid item xs={12} sm={4} md={4}>
-                                <Paper variant="outlined" style={{display: 'flex'}}>
+                                <Paper variant="outlined" style={{ display: 'flex' }}>
                                     <InputBase
                                         className={classes.input}
                                         placeholder="Join game by id/key"
@@ -186,7 +195,7 @@ function BoardItem(props) {
     return (
         <Grid item xs={12} sm={6} md={4}>
             <Card variant="outlined" className={classes.card}>
-                <CardActionArea style={{flexGrow: 1}}>
+                <CardActionArea style={{ flexGrow: 1 }}>
                     <CardContent className={classes.cardContent}>
                         <Typography gutterBottom variant="h5" component="h2">
                             {board.name}
@@ -269,7 +278,7 @@ function AddBoardDialog(props) {
     }
 
     return (
-        <div style={{position: 'absolute'}}>
+        <div style={{ position: 'absolute' }}>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 Create game
             </Button>
