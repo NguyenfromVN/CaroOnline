@@ -68,9 +68,8 @@ export default function Board(props) {
                     callbacks[topic]();
                 }
             });
-            let topic = `${board.userId1}-${board.userId2}`;
-            ws.subscribeTopic(`${topic}-board`);
-            ws.subscribeTopic(`${topic}-chat`);
+            ws.subscribeTopic(`${board.boardId}-board`);
+            ws.subscribeTopic(`${board.boardId}-chat`);
         })();
     }, []);
 
@@ -93,7 +92,7 @@ export default function Board(props) {
         current.squares[row * boardSize + col] = (board.userId1 == localStorage.getItem('username') ? 'X' : 'O');
         setBoard(boardCopy);
         await api.takeTurn(boardId, row, col);
-        ws.notifyChange(`${board.userId1}-${board.userId2}-board`);
+        ws.notifyChange(`${board.boardId}-board`);
     }
 
     function renderSquares() {
@@ -135,7 +134,7 @@ export default function Board(props) {
                     participant2={board.userId2}
                     isPlayer={isPlayer}
                     chat={chat}
-                    topicName={`${board.userId1}-${board.userId2}-chat`}
+                    topicName={`${board.boardId}-chat`}
                 />
             </div>
         </div>
