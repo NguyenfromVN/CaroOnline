@@ -27,6 +27,7 @@ export default function Board(props) {
     const [board, setBoard] = useState({});
     const [chat, setChat] = useState([]);
     const [isPlayer, setIsPlayer] = useState(false);
+    const [isEmptyRoom, setIsEmptyRoom] = useState(false);
     const boardId = (new URL(document.location)).searchParams.get('id');
     const history = useHistory();
     const classes = useStyles();
@@ -46,6 +47,11 @@ export default function Board(props) {
             // get chat
             let chat = await api.getBoardChat(boardId);
             setChat(chat);
+            // set isEmptyRoom
+            if (!board.userId2)
+                setIsEmptyRoom(true);
+            else
+                setIsEmptyRoom(false);
             // init web socket client
             ws.createConnection(localStorage.getItem('username'), (topicName) => {
                 let callbacks = {
@@ -75,6 +81,10 @@ export default function Board(props) {
 
     async function takeTurn(row, col) {
         if (!isPlayer) {
+            return;
+        }
+        if (isEmptyRoom) {
+            alert("Please wait until there is another player enter this room to play!")
             return;
         }
         // check if the cell is empty
