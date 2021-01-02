@@ -65,14 +65,10 @@ exports.get_grid = function (req, res) {
 exports.get_board_by_id = function (req, res) {
   const boardId = req.params.id;
   Board.getBoardbyId(boardId, function (err, board) {
-<<<<<<< Updated upstream
     if (err) {
       res.send(err);
       return;
     }
-=======
-    if (err) return res.send(err);
->>>>>>> Stashed changes
     res.send(board);
   });
 };
@@ -97,7 +93,8 @@ exports.create_board = function (req, res) {
   const { name, boardId } = req.query;
   Board.createBoard(boardId, name, req.user.username, function (err, board) {
     if (err) {
-      return res.send(err);    }
+      return res.send(err);
+    }
     res.json(board);
   });
 };
