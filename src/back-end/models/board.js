@@ -12,6 +12,7 @@ let boardSchema = new mongoose.Schema({
   stepNum: Number,
   history: Array,
   chat: Array,
+  winLine: Array,
 });
 
 //Tạo model
@@ -73,6 +74,7 @@ function Board() {
         stepNum: newStepNum,
         nextTurn: newNextTurn,
         winner: newWinner,
+        winLine: winnerCheck.winLine,
       },
       (err, res) => {
         if (err) return result(null, err);
