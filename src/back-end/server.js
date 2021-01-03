@@ -69,6 +69,12 @@ function removeActiveUser(userId) {
   }
 }
 
+// helpers
+function isPlayersTopic(topic){
+  let arr=topic.split('-');
+  return (arr[arr.length - 1]=='players');
+}
+
 // WEB SOCKET
 const topics = (() => {
   // private
@@ -97,10 +103,16 @@ const topics = (() => {
   }
 
   function broadcastChange(topicName) {
+    if (!topics[topicName])
+      return;
+    let msg=`${topicName}>>>has new updates`;
+    if (isPlayersTopic(topicName)){
+      msg=`${topicName}:${Object.keys(topics[topicName]).length}>>>has new updates`;
+    }
     for (let userId in topics[topicName]) {
       for (let socketId in topics[topicName][userId]) {
         let socket = topics[topicName][userId][socketId];
-        socket.send(`${topicName}>>>has new updates`);
+        socket.send(msg);
       }
     }
   }
@@ -130,6 +142,9 @@ wss.on("connection", (socket, req) => {
     } else {
       // want to subscribe a topic
       topics.subscribeToTopic(msg.split(">>>")[0], socket, userId, socketId);
+      if (isPlayersTopic(msg.split(">>>")[0])){
+        topics.broadcastChange(msg.split(">>>")[0]);
+      }
       topicsList.push(msg.split(">>>")[0]);
     }
   });
@@ -138,6 +153,9 @@ wss.on("connection", (socket, req) => {
     console.log(`User ${userId} disconnected`);
     topicsList.forEach((topic) => {
       topics.removeSubscription(topic, userId, socketId, socketId);
+      if (isPlayersTopic(topic)){
+        topics.broadcastChange(topic);
+      }
     });
     topicsList=[];
     removeActiveUser(userId);

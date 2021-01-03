@@ -103,7 +103,6 @@ export default function Home() {
                     },
                 };
                 const topic = topicName.split('>>>')[0];
-                console.log(topic);
                 if (callbacks[topic]) {
                     callbacks[topic]();
                 }

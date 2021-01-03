@@ -58,21 +58,30 @@ export default function Board(props) {
                 let topic = arr[arr.length - 1];
                 if (callbacks[topic]) {
                     callbacks[topic]();
+                } else {
+                    // players topic
+                    const activePlayers=topic[topic.length - 1];
+                    if (activePlayers!=2){
+                        alert('The game will start when another player is available, wait for it!');
+                        setIsEmptyRoom(true);
+                    } else {
+                        alert('Another player is ready, are you ready?');
+                        setIsEmptyRoom(false);
+                    }
                 }
             });
             ws.subscribeTopic(`${board.boardId}-board`);
             ws.subscribeTopic(`${board.boardId}-chat`);
             // set isPlayer
             let username = localStorage.getItem('username');
-            setIsPlayer(username == board.userId1 || username == board.userId2);
+            const isPlayer = (username == board.userId1 || username == board.userId2);
+            setIsPlayer(isPlayer);
+            if (isPlayer){
+                ws.subscribeTopic(`${board.boardId}-players`);    
+            }
             // get chat
             let chat = await api.getBoardChat(boardId);
             setChat(chat);
-            // set isEmptyRoom
-            if (!board.userId2)
-                setIsEmptyRoom(true);
-            else
-                setIsEmptyRoom(false);
         })();
     }, []);
 
