@@ -41,17 +41,6 @@ export default function Board(props) {
                 return;
             }
             setBoard(board);
-            // set isPlayer
-            let username = localStorage.getItem('username');
-            setIsPlayer(username == board.userId1 || username == board.userId2);
-            // get chat
-            let chat = await api.getBoardChat(boardId);
-            setChat(chat);
-            // set isEmptyRoom
-            if (!board.userId2)
-                setIsEmptyRoom(true);
-            else
-                setIsEmptyRoom(false);
             // init web socket client
             ws.createConnection(localStorage.getItem('username'), (topicName) => {
                 let callbacks = {
@@ -63,9 +52,6 @@ export default function Board(props) {
                         let board = await api.getBoard(boardId);
                         setBoard(board);
                     },
-                    general: function () {
-                        // TODO
-                    }
                 };
                 let arr = topicName.split('>>>')[0];
                 arr = arr.split('-');
@@ -76,6 +62,17 @@ export default function Board(props) {
             });
             ws.subscribeTopic(`${board.boardId}-board`);
             ws.subscribeTopic(`${board.boardId}-chat`);
+            // set isPlayer
+            let username = localStorage.getItem('username');
+            setIsPlayer(username == board.userId1 || username == board.userId2);
+            // get chat
+            let chat = await api.getBoardChat(boardId);
+            setChat(chat);
+            // set isEmptyRoom
+            if (!board.userId2)
+                setIsEmptyRoom(true);
+            else
+                setIsEmptyRoom(false);
         })();
     }, []);
 

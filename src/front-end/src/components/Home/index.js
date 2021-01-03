@@ -93,33 +93,26 @@ export default function Home() {
             // init web socket client
             ws.createConnection(localStorage.getItem('username'), (topicName) => {
                 let callbacks = {
-                    general: function () {
-                        let needToRefresh = topicName.split('-')[1];
-                        switch (needToRefresh) {
-                            case "users": {
-                                (async () => {
-                                    let arr = await api.getUsers();
-                                    setUsers(arr);
-                                })();
-                                break;
-                            }
-                            case "boards": {
-                                (async () => {
-                                    let arr = await api.getAllBoards();
-                                    setBoards(arr);
-                                })();
-                                break;
-                            }
-                        }
-                    }
+                    usersList: async () => {
+                        let arr = await api.getUsers();
+                        setUsers(arr);
+                    },
+                    boardsList: async () => {
+                        let arr = await api.getAllBoards();
+                        setBoards(arr);
+                    },
                 };
-                let arr = topicName.split('>>>')[0];
-                arr = arr.split('-');
-                let topic = arr[0];
+                const topic = topicName.split('>>>')[0];
+                console.log(topic);
                 if (callbacks[topic]) {
                     callbacks[topic]();
                 }
             });
+            ws.subscribeTopic('boardsList');
+            ws.subscribeTopic('usersList');
+            // get users list
+            let arr = await api.getUsers();
+            setUsers(arr);
         })();
     }, []);
 
@@ -128,21 +121,21 @@ export default function Home() {
         const boardResponse = await api.getBoard(boardId);
         if (boardResponse._id) {
             const username = localStorage.getItem("username");
-            if (username==boardResponse.userId1){
+            if (username == boardResponse.userId1) {
                 alert('You are already the owner of this game!');
                 history.push(`/board?id=${boardId}`);
             } else {
                 if (!boardResponse.userId2) {
                     await api.joinBoard(boardId);
                     history.push(`/board?id=${boardId}`);
-                    alert("You have successfully joined the game as the second player. Play your best!");    
+                    alert("You have successfully joined the game as the second player. Play your best!");
                 } else {
                     history.push(`/board?id=${boardId}`);
-                    if (boardResponse.userId2==username){
-                        alert("You already joined this game as a player!");    
+                    if (boardResponse.userId2 == username) {
+                        alert("You already joined this game as a player!");
                     } else {
                         alert("This game is full. You have joined the game as a spectator. Enjoy the match!");
-                    }    
+                    }
                 }
             }
         } else {
@@ -282,12 +275,12 @@ function AddBoardDialog(props) {
 
     async function createNewBoard(e) {
         handleClose();
-        const response=await api.createBoard(nameText, nameText);
-        if (response!='Success'){
+        const response = await api.createBoard(nameText, nameText);
+        if (response != 'Success') {
             alert(response);
             return;
         }
-        ws.notifyChange('boards');
+        ws.notifyChange('boardsList');
     }
 
     return (

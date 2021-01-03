@@ -35,7 +35,7 @@ const ws = (() => {
             ws.send(msg);
         } catch (e){
             // before connection create
-            setTimeout(()=>ws.send(msg),1000);
+            setTimeout(()=>ws.send(msg),500);
         }
     }
 

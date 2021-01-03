@@ -96,11 +96,11 @@ const topics = (() => {
     console.log(topics);
   }
 
-  function broadcastChange(topicName, subTopic) {
+  function broadcastChange(topicName) {
     for (let userId in topics[topicName]) {
       for (let socketId in topics[topicName][userId]) {
         let socket = topics[topicName][userId][socketId];
-        socket.send(`${topicName + (subTopic ? '-' + subTopic : '')}>>>has new update`);
+        socket.send(`${topicName}>>>has new updates`);
       }
     }
   }
@@ -115,23 +115,18 @@ const topics = (() => {
 wss.on("connection", (socket, req) => {
   // each user can have more than one connection, each connection will be identified by a random number
   // each connection can have a lot of following topics, so use an array to store these
-  let topicsList = ['general']; // by default, every connection subscribes to "general" topic, for general notification
+  let topicsList = [];
   let userId = decodeURI(req.url.split("?")[1].split("=")[1]);
   let socketId = Math.random();
-  topics.subscribeToTopic("general", socket, userId, socketId);
   addNewActiveUser(userId);
-  topics.broadcastChange('general', 'users');
+  topics.broadcastChange("usersList");
 
   socket.on("message", (msg) => {
     console.log(`Message from user ${userId}:`);
     console.log(msg);
     if (msg.split(">>>")[1] == "changed") {
       // some changes happend
-      if (msg.split(">>>")[0] == 'boards') {
-        topics.broadcastChange('general', 'boards');
-      } else {
         topics.broadcastChange(msg.split(">>>")[0]);
-      }
     } else {
       // want to subscribe a topic
       topics.subscribeToTopic(msg.split(">>>")[0], socket, userId, socketId);
@@ -144,8 +139,9 @@ wss.on("connection", (socket, req) => {
     topicsList.forEach((topic) => {
       topics.removeSubscription(topic, userId, socketId, socketId);
     });
+    topicsList=[];
     removeActiveUser(userId);
-    topics.broadcastChange('general', 'users');
+    topics.broadcastChange('usersList');
   });
 });
 
