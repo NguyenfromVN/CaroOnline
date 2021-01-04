@@ -7,7 +7,7 @@
 .board-game {
     display: grid;
     height: 500px;
-    grid-template-columns: 1fr 5fr 4fr;
+    grid-template-columns: 2fr 5fr 3fr;
 }
 
 .square {
@@ -85,4 +85,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+
+.game-info-frame h1 {
+    color: red;
 }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Square from './square';
 import Chat from './chat';
+import GameInfo from './gameInfo';
 import './index.css';
 import { useHistory } from 'react-router-dom';
 import api from '../../api/userApi';
@@ -60,8 +61,8 @@ export default function Board(props) {
                     callbacks[topic]();
                 } else {
                     // players topic
-                    const activePlayers=topic[topic.length - 1];
-                    if (activePlayers!=2){
+                    const activePlayers = topic[topic.length - 1];
+                    if (activePlayers != 2) {
                         alert('The game will start when another player is available, wait for it!');
                         setIsEmptyRoom(true);
                     } else {
@@ -76,8 +77,8 @@ export default function Board(props) {
             let username = localStorage.getItem('username');
             const isPlayer = (username == board.userId1 || username == board.userId2);
             setIsPlayer(isPlayer);
-            if (isPlayer){
-                ws.subscribeTopic(`${board.boardId}-players`);    
+            if (isPlayer) {
+                ws.subscribeTopic(`${board.boardId}-players`);
             }
             // get chat
             let chat = await api.getBoardChat(boardId);
@@ -140,6 +141,7 @@ export default function Board(props) {
             <div className='board-game'>
                 <div>
                     {/* for history */}
+                    <GameInfo board={board} />
                 </div>
                 <div >
                     {renderSquares()}
