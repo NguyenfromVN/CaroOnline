@@ -90,3 +90,7 @@
 .game-info-frame h1 {
     color: red;
 }
+
+.game-info-frame-display-none {
+    display: none;
+}
