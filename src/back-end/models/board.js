@@ -50,6 +50,7 @@ function Board() {
         : currentBoard.userId1;
     let newWinner = "";
     let history = currentBoard.history.slice(0, newStepNum);
+    let record = {};
     const current = JSON.parse(JSON.stringify(history[history.length - 1]));
     const position = row * 20 + col;
 
@@ -63,6 +64,7 @@ function Board() {
     );
     if (winnerCheck.win) {
       newWinner = currentBoard.nextTurn;
+      record = await User.setPlayerTrophy(newWinner, newNextTurn);
     }
 
     history = history.concat(current);
@@ -78,7 +80,7 @@ function Board() {
       },
       (err, res) => {
         if (err) return result(null, err);
-        result(null, { winnerCheck, winner: newWinner });
+        result(null, { winnerCheck, winner: newWinner, record });
       }
     );
   };

@@ -46,7 +46,12 @@ exports.add_user_by_credential = function (req, res) {
     res.json(user);
   });
 };
-
+exports.get_leaderboard = (req, res) => {
+  User.getLeaderBoard((err, user) => {
+    if (err) return res.send(err);
+    res.json(user);
+  });
+};
 exports.validate_user = (req, res) => {
   User.validateUser(req.params.username, function (err, user) {
     if (err) return res.send(err);

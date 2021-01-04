@@ -44,8 +44,8 @@ module.exports = function (app, passport) {
   protectedRoutes.get("/make_message", controller.make_message);
 
   // user Routes
+  app.route("/get_leaderboard").get(controller.get_leaderboard);
   app.route("/user/:username").get(controller.get_user_by_username);
-
   app.route("/login").post(controller.get_user_by_credential);
   app.route("/register").post(controller.add_user_by_credential);
   app.route("/validate/:username").post(controller.validate_user);

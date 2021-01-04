@@ -10,6 +10,9 @@ let userSchema = new mongoose.Schema({
   history: Array,
   friends: Array,
   isValidated: Boolean,
+  win: Number,
+  lose: Number,
+  trophy: Number,
 });
 
 // Tạo model
@@ -72,7 +75,15 @@ function User() {
   // Chức năng Register
   this.addUserByCredential = function (credential, result) {
     UserModel.create(
-      { ...credential, status: "offline", board: "", isValidated: false },
+      {
+        ...credential,
+        status: "offline",
+        board: "",
+        isValidated: false,
+        win: 0,
+        lose: 0,
+        trophy: 0,
+      },
       function (err, res) {
         if (err) return result(null, err);
         sendValidatedMail(credential.email, credential.username);
@@ -89,6 +100,46 @@ function User() {
       function (err, res) {
         if (err) return result(null, "error");
         result(null, "success");
+      }
+    );
+  };
+  this.getLeaderBoard = (result) => {
+    UserModel.find({}, ["username", "trophy"], {
+      skip: 0,
+      limit: 10,
+      sort: {
+        trophy: -1,
+      },
+    })
+      .then((res) => {
+        console.log(res, "res");
+        result(null, res);
+      })
+      .catch((err) => {
+        console.log(err, "err");
+        result(null, err);
+      });
+  };
+  this.setPlayerTrophy = async (winnerId, loserId) => {
+    const winner = await getUser(winnerId);
+    const loser = await getUser(loserId);
+    console.log(winner);
+    UserModel.updateOne(
+      { username: winnerId },
+      { win: winner.win + 1, trophy: winner.trophy + 1 },
+      function (err, res) {
+        UserModel.updateOne(
+          { username: loserId },
+          { lose: loser.lose + 1, trophy: loser.trophy - 1 },
+          function (err, res2) {
+            return {
+              winner: winnerId,
+              loser: loserId,
+              winnerTrophy: winner.trophy + 1,
+              loserTrophy: loser.trophy - 1,
+            };
+          }
+        );
       }
     );
   };
@@ -120,5 +171,13 @@ const sendValidatedMail = (email, username) => {
     }
   });
 };
-
+const getUser = async (username) => {
+  let res;
+  try {
+    res = await UserModel.find({ username });
+  } catch (err) {
+    return "err";
+  }
+  return res.length ? res[0] : undefined;
+};
 module.exports = new User();
