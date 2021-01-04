@@ -39,10 +39,10 @@ export default function UserProfile() {
     // const email = (new URL(document.location)).searchParams.get('email');
     // const token = localStorage.getItem("token");
 
-    useEffect(()=>{
+    useEffect(() => {
         const username = (new URL(document.location)).searchParams.get('user');
-        
-        (async ()=>{
+
+        (async () => {
             let response = await api.getUserByUsername(username);
             if (response.message) {
                 history.push('/signin');
@@ -50,7 +50,7 @@ export default function UserProfile() {
             }
             setUser(response);
         })();
-    },[]);
+    }, []);
 
     // if (!token) {
     //     history.push('/signin');
@@ -97,8 +97,8 @@ export default function UserProfile() {
                     Profile
                 </Typography>
                 <form method='PUT' className={classes.form} onSubmit={handleSubmit}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
+                    {/* <Grid container spacing={2}> */}
+                    {/* <Grid item xs={12}>
                             <TextField
                                 autoComplete="fname"
                                 name="username"
@@ -123,7 +123,51 @@ export default function UserProfile() {
                                 label="Email"
                             />
                         </Grid>
-                    </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                autoComplete="fwinNumber"
+                                name="winNumber"
+                                variant="outlined"
+                                required
+                                fullWidth
+                                value={user.win || ''}
+                                disabled
+                                id="winNumber"
+                                label="Games won"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                autoComplete="floseNumber"
+                                name="loseNumber"
+                                variant="outlined"
+                                required
+                                fullWidth
+                                value={user.lose || ''}
+                                disabled
+                                id="loseNumber"
+                                label="Games lost"
+                            />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <TextField
+                                autoComplete="fTrophies"
+                                name="trophies"
+                                variant="outlined"
+                                required
+                                fullWidth
+                                value={user.trophy || ''}
+                                disabled
+                                id="trophy"
+                                label="Trophy"
+                            />
+                        </Grid> */}
+                    <p>Username: {user.username}</p><br />
+                    <p>Email: {user.email}</p><br />
+                    <p>Games won: {user.win}</p><br />
+                    <p>Games lost: {user.lose}</p><br />
+                    <p>Trophy: {user.trophy}</p>
+                    {/* </Grid> */}
                     {/* <Button
                         type="submit"
                         fullWidth
