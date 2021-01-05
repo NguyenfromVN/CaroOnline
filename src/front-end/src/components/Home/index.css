@@ -3,13 +3,27 @@
     grid-template-columns: 8fr 2fr;
 }
 
-.users-list {
-    max-height: 90vh;
-    padding: 10px;
-    overflow-y: auto;
+.right-panel {
+    height: 90vh;
     position: -webkit-sticky; /* Safari */
     position: sticky;
     top: 0;
+}
+
+.right-panel-container {
+    height: inherit;
+    display: grid;
+    grid-template-rows: 7fr 3fr;
+}
+
+.users-list {
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.ranking-board {
+    padding: 10px;
+    overflow-y: auto;
 }
 
 .user-item {

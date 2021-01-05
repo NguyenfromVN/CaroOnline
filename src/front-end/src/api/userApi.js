@@ -82,6 +82,11 @@ const userApi = {
         const url = `/user/${username}`;
         const response = await axiosClient.get(url);
         return response;
+    },
+    getRankingBoard: async function () {
+        const url = '/get_leaderboard';
+        const response = await axiosClient.get(url);
+        return response;
     }
 }
 

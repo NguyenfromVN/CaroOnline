@@ -1,3 +1,4 @@
+import RankingBoard from './rankingBoard';
 import React, { useEffect, useState } from 'react';
 import './index.css';
 import ws from '../../webSocketClient';
@@ -78,6 +79,7 @@ export default function Home() {
     const [users, setUsers] = useState([]);
     const [boards, setBoards] = useState([]);
     const [searchedBoardIdText, setSearchedBoardIdText] = useState('');
+    const [rankingBoard, setRankingBoard] = useState([]);
     const history = useHistory();
 
     useEffect(() => {
@@ -112,6 +114,9 @@ export default function Home() {
             // get users list
             let arr = await api.getUsers();
             setUsers(arr);
+            // get ranking board
+            const rankingBoard = await api.getRankingBoard();
+            setRankingBoard(rankingBoard);
         })();
     }, []);
 
@@ -176,8 +181,13 @@ export default function Home() {
                         </Grid>
                     </Container>
                 </div>
-                <div className="users-list">
-                    {usersList(users)}
+                <div className="right-panel">
+                    <div className='right-panel-container'>
+                        <div className='users-list'>
+                            {usersList(users)}
+                        </div>
+                        <RankingBoard rankingBoard={rankingBoard}/>
+                    </div>
                 </div>
             </div>
         </main>
