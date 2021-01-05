@@ -4,10 +4,15 @@
     display: table;
 }
 
+.board-row {
+    display: flex;
+    justify-content: center;
+}
+
 .board-game {
     display: grid;
-    height: 500px;
-    grid-template-columns: 2fr 5fr 3fr;
+    height: 550px;
+    grid-template-columns: 1fr 9fr 5fr;
 }
 
 .square {
@@ -87,10 +92,11 @@
     grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 }
 
-.game-info-frame h1 {
-    color: red;
+.game-info-frame {
+    text-align: center;
+    padding: 10px;
 }
 
-.game-info-frame-display-none {
-    display: none;
+.game-info-frame div {
+    font-weight: bold;
 }

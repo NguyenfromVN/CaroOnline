@@ -141,9 +141,11 @@ export default function Board(props) {
             <div className='board-game'>
                 <div>
                     {/* for history */}
-                    <GameInfo board={board} />
                 </div>
-                <div >
+                <div>
+                    <div>
+                        <GameInfo board={board} />
+                    </div>
                     {renderSquares()}
                 </div>
                 <Chat

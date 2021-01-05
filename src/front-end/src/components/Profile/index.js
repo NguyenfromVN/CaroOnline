@@ -1,9 +1,8 @@
+import './index.css';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import Avatar from '@material-ui/core/Avatar';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
@@ -35,10 +34,6 @@ export default function UserProfile() {
     const history = useHistory();
     const [user, setUser] = useState({});
 
-    // const username = (new URL(document.location)).searchParams.get('user');
-    // const email = (new URL(document.location)).searchParams.get('email');
-    // const token = localStorage.getItem("token");
-
     useEffect(() => {
         const username = (new URL(document.location)).searchParams.get('user');
 
@@ -52,40 +47,6 @@ export default function UserProfile() {
         })();
     }, []);
 
-    // if (!token) {
-    //     history.push('/signin');
-    // }
-
-    function handleSubmit(e) {
-        // fetch(`${config.uriPath}/users`, {
-        //     method: 'PUT',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //         "userID": userID
-        //     },
-        //     body: JSON.stringify({
-        //         "name": nameText,
-        //         "password": passwordText
-        //     })
-        // }).then(resp => resp.json())
-        //     .then(data => {
-        //         console.log(data);
-        //         if (data.code === 0) {
-        //             history.push('/');
-        //             handleEditProfile();
-        //             alert("Update profile successfully!");
-
-        //         } else {
-        //             alert('Update failed. Please fill out password fields to update!');
-        //         }
-
-        //         //loadData();
-        //         //setOpen(false);
-        //     })
-
-        // e.preventDefault();
-    }
-
     return (
         <Container component="main" maxWidth="xs">
             <CssBaseline />
@@ -96,97 +57,13 @@ export default function UserProfile() {
                 <Typography component="h1" variant="h5">
                     Profile
                 </Typography>
-                <form method='PUT' className={classes.form} onSubmit={handleSubmit}>
-                    {/* <Grid container spacing={2}> */}
-                    {/* <Grid item xs={12}>
-                            <TextField
-                                autoComplete="fname"
-                                name="username"
-                                variant="outlined"
-                                fullWidth
-                                value={user.username || ''}
-                                disabled
-                                id="username"
-                                label="Username"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="fname"
-                                name="email"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                value={user.email || ''}
-                                disabled
-                                id="email"
-                                label="Email"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="fwinNumber"
-                                name="winNumber"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                value={user.win || ''}
-                                disabled
-                                id="winNumber"
-                                label="Games won"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="floseNumber"
-                                name="loseNumber"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                value={user.lose || ''}
-                                disabled
-                                id="loseNumber"
-                                label="Games lost"
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                autoComplete="fTrophies"
-                                name="trophies"
-                                variant="outlined"
-                                required
-                                fullWidth
-                                value={user.trophy || ''}
-                                disabled
-                                id="trophy"
-                                label="Trophy"
-                            />
-                        </Grid> */}
-                    <p>Username: {user.username}</p><br />
-                    <p>Email: {user.email}</p><br />
-                    <p>Games won: {user.win}</p><br />
-                    <p>Games lost: {user.lose}</p><br />
-                    <p>Trophy: {user.trophy}</p>
-                    {/* </Grid> */}
-                    {/* <Button
-                        type="submit"
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                    >
-                        Submit
-                    </Button> */}
-                    {/* <Button
-                        fullWidth
-                        variant="contained"
-                        color="primary"
-                        className={classes.submit}
-                        onClick={handleCancel}
-                    >
-                        Cancel
-                    </Button> */}
-                </form>
+                <div className='profile-content'>
+                    <div>Username: <b>{user.username}</b></div><br />
+                    <div>Email: <b>{user.email}</b></div><br />
+                    <div>Games won: <b>{user.win}</b></div><br />
+                    <div>Games lost: <b>{user.lose}</b></div><br />
+                    <div>Trophy: <b>{user.trophy}</b></div>
+                </div>
             </div>
         </Container>
     );
