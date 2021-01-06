@@ -85,6 +85,27 @@ function Board() {
     );
   };
 
+  this.surrender = async function (boardId, username, result) {
+    const currentBoard = await getBoard(boardId);
+    console.log(currentBoard)
+    const newWinner =
+      username === currentBoard.userId1
+        ? currentBoard.userId2
+        : currentBoard.userId1;
+    record = await User.setPlayerTrophy(newWinner, username);
+    
+    BoardModel.updateOne(
+      { boardId },
+      {
+        winner: newWinner,
+      },
+      (err, res) => {
+        if (err) return result(null, err);
+        result(null, { winner: newWinner, record });
+      }
+    );
+  };
+
   // Chức năng thêm board mới
   this.createBoard = async function (boardId, name, userId1, result) {
     let squares = [...Array(BOARD_SIZE).fill(null)];
@@ -110,20 +131,6 @@ function Board() {
       }
       result(null, "Success");
     });
-  };
-
-  this.forceWin = async function (boardId, username, result) {
-    const currentBoard = await getBoard(boardId);
-    BoardModel.updateOne(
-      { boardId },
-      {
-        winner: username === currentBoard.userId1 ? userId2 : userId1,
-      },
-      (err, res) => {
-        if (err) return result(null, err);
-        result(null, res);
-      }
-    );
   };
 
   this.getAllBoards = (result) => {

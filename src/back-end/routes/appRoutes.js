@@ -37,11 +37,11 @@ module.exports = function (app, passport) {
   protectedRoutes.get("/join_board", controller.join_board);
   protectedRoutes.get("/make_turn", controller.make_turn);
   protectedRoutes.get("/create_board", controller.create_board);
-  protectedRoutes.get("/force_win", controller.force_win);
   protectedRoutes.get("/get_all_boards", controller.get_all_boards);
   protectedRoutes.get("/get_board_chat", controller.get_board_chat);
   protectedRoutes.get("/get_board_history", controller.get_board_history);
   protectedRoutes.get("/make_message", controller.make_message);
+  protectedRoutes.get("/surrender", controller.surrender);
 
   // user Routes
   app.route("/get_leaderboard").get(controller.get_leaderboard);

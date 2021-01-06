@@ -104,9 +104,9 @@ exports.create_board = function (req, res) {
   });
 };
 
-exports.force_win = function (req, res) {
+exports.surrender = function (req, res) {
   const { boardId } = req.body;
-  Board.forceWin(boardId, req.user.username, function (err, board) {
+  Board.surrender(boardId, req.user.username, function (err, board) {
     if (err) return res.send(err);
     res.json(board);
   });
