@@ -19,7 +19,7 @@ const renderSquare = (props) => {
         <Square
             value={props.value}
             onClick={props.onClick}
-        // highlight={(winLine && winLine.includes(i))}
+        // highlight={(winLine)}
         />
     );
 }
@@ -102,6 +102,10 @@ export default function Board(props) {
         if (board.nextTurn != localStorage.getItem('username')) {
             return;
         }
+        // check if there is winner
+        if (board.winner) {
+            return;
+        }
         // make the turn at client while waiting for response from server
         let boardCopy = JSON.parse(JSON.stringify(board));
         let current = JSON.parse(JSON.stringify(board.history[board.history.length - 1]));
@@ -122,7 +126,7 @@ export default function Board(props) {
             for (let j = 0; j < boardSize; j++) {
                 row.push(renderSquare({
                     value: squares[i * boardSize + j],
-                    onClick: () => takeTurn(i, j)
+                    onClick: () => takeTurn(i, j),
                 }));
             }
             jsx.push(<div key={i} className="board-row">{row}</div>);

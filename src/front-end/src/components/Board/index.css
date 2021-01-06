@@ -30,6 +30,11 @@
     width: 25px;
 }
 
+.square:hover {
+    background: darkorange;
+    cursor: pointer;
+}
+
 .square:focus {
     outline: none;
 }
