@@ -11,7 +11,7 @@
 
 .board-game {
     display: grid;
-    height: 550px;
+    height: 600px;
     grid-template-columns: 1fr 9fr 5fr;
 }
 
@@ -86,6 +86,11 @@
     outline: none;
 }
 
+.send-button:hover {
+    background-color: rgb(235, 119, 129);
+    transition: 0.5s;
+}
+
 .container-board {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -94,7 +99,7 @@
 
 .game-info-frame {
     text-align: center;
-    padding: 10px;
+    padding: 15px;
 }
 
 .game-info-frame div {

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router';
 
-export default function Google() {
+export default function Google(props) {
     const history = useHistory();
 
     const username = (new URL(document.location)).searchParams.get('user');
@@ -11,6 +11,7 @@ export default function Google() {
         localStorage.setItem("username", username);
         localStorage.setItem("token", token);
         localStorage.setItem("loginStatus", true);
+        props.handleChangeLoginStatus();
         history.push('/');
     }, []);
 

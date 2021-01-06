@@ -55,17 +55,15 @@ function App() {
     const [loginStatus, setLoginStatus] = useState(false);
 
     const username = localStorage.getItem("username");
-    // const token = localStorage.getItem("token");
     localStorage.setItem("loginStatus", loginStatus);
-
-    // if (token) {
-    //     setLoginStatus(true);
-    // } else {
-    //     setLoginStatus(false);
-    // }
 
     const handleChangeLoginStatus = () => {
         setLoginStatus(!loginStatus);
+    }
+
+    const handleLogout = () => {
+        setLoginStatus(false);
+        localStorage.clear();
     }
 
     return (
@@ -116,7 +114,7 @@ function App() {
                                         style={{ textDecoration: 'none' }}
                                         activeStyle={{ textDecoration: 'none', color: 'yellow' }}
                                         color="inherit"
-                                        to={`/profile`}
+                                        to={`/detail?user=${username}`}
                                         className={classes.link}>
                                         <AccountIcon className={classes.iconForBreadSrum} />
                                         Hi, {username}
@@ -128,12 +126,11 @@ function App() {
                                         activeStyle={{ textDecoration: 'none', color: 'yellow' }}
                                         color="inherit"
                                         to="/signin"
-                                        // onClick={handleLogout}
+                                        onClick={handleLogout}
                                         className={classes.link}>
                                         <AccountIcon className={classes.iconForBreadSrum} />
 								  			Sign out
 									</NavLink> : null}
-                                {/* {renderValue} */}
 
                             </Breadcrumbs>
                         </Toolbar>
@@ -147,7 +144,7 @@ function App() {
                             <Route path='/check-mail' exact component={CheckMail} />
                             <Route path='/validate' exact component={MailValidate} />
                             <Route path='/detail' exact component={Profile} />
-                            <Route path='/google' exact component={Google} />
+                            <Route path='/google' exact component={() => (<Google handleChangeLoginStatus={handleChangeLoginStatus} />)} />
                         </Switch>
                     </main>
                     {/* Footer */}
