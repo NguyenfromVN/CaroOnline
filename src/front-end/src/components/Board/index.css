@@ -31,8 +31,7 @@
 }
 
 .square:hover {
-    background: darkorange;
-    cursor: pointer;
+    background: #ff8c00;
 }
 
 .square:focus {
@@ -48,7 +47,7 @@
     background: #eeeeee;
     border: 0px;
     display: grid;
-    grid-template-rows: 6fr 1fr;
+    grid-template-rows: 8fr 1fr;
 }
 
 .message-tag-left {
@@ -92,8 +91,7 @@
 }
 
 .send-button:hover {
-    background-color: rgb(235, 119, 129);
-    transition: 0.5s;
+    color: #00b58e;
 }
 
 .container-board {
@@ -104,7 +102,7 @@
 
 .game-info-frame {
     text-align: center;
-    padding: 15px;
+    padding: 10px;
 }
 
 .game-info-frame div {

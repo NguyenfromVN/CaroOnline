@@ -11,11 +11,8 @@ const GameInfo = (props) => {
     return (
         <div className="game-info-frame">
             <div>Winner: {winnerText}</div>
-            <div>Next turn: {nextTurnText}</div>
-            <Button variant="outlined" color="primary" style={{ margin: "5px 5px" }} disabled={!isPlayer}>
-                Draw, please!
-            </Button>
-            <Button variant="outlined" color="secondary" style={{ margin: "5px 5px" }} disabled={!isPlayer}>
+            <div>Next turn: {props.board.winner ? '---' : nextTurnText}</div>
+            <Button variant="outlined" color="secondary" style={{ margin: "5px 5px" }} disabled={!isPlayer || !!props.board.winner}>
                 Surrender
             </Button>
         </div>

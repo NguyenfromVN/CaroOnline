@@ -14,12 +14,11 @@ const useStyles = makeStyles((theme) => ({
 const boardSize = 20;
 
 const renderSquare = (props) => {
-    // const winLine = props.winLine;
     return (
         <Square
             value={props.value}
             onClick={props.onClick}
-        // highlight={(winLine)}
+            highlight={props.highlight}
         />
     );
 }
@@ -31,7 +30,6 @@ export default function Board(props) {
     const [isEmptyRoom, setIsEmptyRoom] = useState(false);
     const boardId = (new URL(document.location)).searchParams.get('id');
     const history = useHistory();
-    const classes = useStyles();
 
     useEffect(() => {
         (async () => {
@@ -61,6 +59,9 @@ export default function Board(props) {
                     callbacks[topic]();
                 } else {
                     // players topic
+                    if (board.winner){
+                        return;
+                    }
                     const activePlayers = topic[topic.length - 1];
                     if (activePlayers != 2) {
                         alert('The game will start when another player is available, wait for it!');
@@ -77,7 +78,7 @@ export default function Board(props) {
             let username = localStorage.getItem('username');
             const isPlayer = (username == board.userId1 || username == board.userId2);
             setIsPlayer(isPlayer);
-            if (isPlayer) {
+            if (isPlayer && !board.winner) {
                 ws.subscribeTopic(`${board.boardId}-players`);
             }
             // get chat
@@ -87,11 +88,15 @@ export default function Board(props) {
     }, []);
 
     async function takeTurn(row, col) {
+        // check if there is winner
+        if (board.winner) {
+            return;
+        }
         if (!isPlayer) {
             return;
         }
         if (isEmptyRoom) {
-            alert("Please wait until there is another player enter this room to play!")
+            alert("Please wait until there is another player enter this room to play!");
             return;
         }
         // check if the cell is empty
@@ -100,10 +105,6 @@ export default function Board(props) {
         }
         // check if this is your turn or not
         if (board.nextTurn != localStorage.getItem('username')) {
-            return;
-        }
-        // check if there is winner
-        if (board.winner) {
             return;
         }
         // make the turn at client while waiting for response from server
@@ -116,6 +117,18 @@ export default function Board(props) {
         ws.notifyChange(`${board.boardId}-board`);
     }
 
+    function isWinnerCell(row, col) {
+        if (!board.winLine) {
+            return false;
+        }
+        for (let i = 0; i < board.winLine.length; i++) {
+            if (board.winLine[i].row == row && board.winLine[i].col == col) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     function renderSquares() {
         if (!board.boardId)
             return;
@@ -126,6 +139,7 @@ export default function Board(props) {
             for (let j = 0; j < boardSize; j++) {
                 row.push(renderSquare({
                     value: squares[i * boardSize + j],
+                    highlight: isWinnerCell(i, j),
                     onClick: () => takeTurn(i, j),
                 }));
             }
