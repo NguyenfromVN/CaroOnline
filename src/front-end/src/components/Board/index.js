@@ -59,12 +59,9 @@ export default function Board(props) {
                     callbacks[topic]();
                 } else {
                     // players topic
-                    if (board.winner){
-                        return;
-                    }
                     const activePlayers = topic[topic.length - 1];
                     if (activePlayers != 2) {
-                        alert('The game will start when another player is available, wait for it!');
+                        alert('Your opponent currently is not available!');
                         setIsEmptyRoom(true);
                     } else {
                         alert('Another player is ready, are you ready?');
