@@ -120,28 +120,34 @@ function User() {
         result(null, err);
       });
   };
-  this.setPlayerTrophy = async (winnerId, loserId) => {
+  this.setPlayerTrophy = async (winnerId, loserId, boardId) => {
     const winner = await getUser(winnerId);
     const loser = await getUser(loserId);
     console.log(winner);
     UserModel.updateOne(
       { username: winnerId },
-      { win: winner.win + 1, trophy: winner.trophy + 1 },
-      function (err, res) {
-        UserModel.updateOne(
-          { username: loserId },
-          { lose: loser.lose + 1, trophy: loser.trophy - 1 },
-          function (err, res2) {
-            return {
-              winner: winnerId,
-              loser: loserId,
-              winnerTrophy: winner.trophy + 1,
-              loserTrophy: loser.trophy - 1,
-            };
-          }
-        );
-      }
+      {
+        win: winner.win + 1,
+        trophy: winner.trophy + 1,
+        history: [...loser.history, { boardId, result: "win" }],
+      },
+      function (err, res) {}
     );
+    UserModel.updateOne(
+      { username: loserId },
+      {
+        lose: loser.lose + 1,
+        trophy: loser.trophy - 1,
+        history: [...loser.history, { boardId, result: "lose" }],
+      },
+      function (err, res2) {}
+    );
+    return {
+      winner: winnerId,
+      loser: loserId,
+      winnerTrophy: winner.trophy + 1,
+      loserTrophy: loser.trophy - 1,
+    };
   };
 }
 const sendValidatedMail = (email, username) => {

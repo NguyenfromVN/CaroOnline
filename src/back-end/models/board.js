@@ -64,7 +64,7 @@ function Board() {
     );
     if (winnerCheck.win) {
       newWinner = currentBoard.nextTurn;
-      record = await User.setPlayerTrophy(newWinner, newNextTurn);
+      record = await User.setPlayerTrophy(newWinner, newNextTurn, boardId);
     }
 
     history = history.concat(current);
@@ -87,13 +87,13 @@ function Board() {
 
   this.surrender = async function (boardId, username, result) {
     const currentBoard = await getBoard(boardId);
-    console.log(currentBoard)
+    console.log(currentBoard);
     const newWinner =
       username === currentBoard.userId1
         ? currentBoard.userId2
         : currentBoard.userId1;
-    record = await User.setPlayerTrophy(newWinner, username);
-    
+    record = await User.setPlayerTrophy(newWinner, username, boardId);
+
     BoardModel.updateOne(
       { boardId },
       {
@@ -187,12 +187,12 @@ const calculateWinner = (squares, row, col, player) => {
   let count = 0;
   let tempRow = row;
   let tempCol = col;
-  let winLine = [{ row:tempRow, col:tempCol }];
+  let winLine = [{ row: tempRow, col: tempCol }];
 
   while (tempCol - 1 >= 0 && squares[tempRow * 20 + (tempCol - 1)] === player) {
     count++;
     tempCol--;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempCol = col;
   while (
@@ -201,7 +201,7 @@ const calculateWinner = (squares, row, col, player) => {
   ) {
     count++;
     tempCol++;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempCol = col;
   if (count === 4) {
@@ -211,11 +211,11 @@ const calculateWinner = (squares, row, col, player) => {
     };
   }
   count = 0;
-  winLine = [{ row:tempRow, col:tempCol }];
+  winLine = [{ row: tempRow, col: tempCol }];
   while (tempRow - 1 >= 0 && squares[(tempRow - 1) * 20 + tempCol] === player) {
     count++;
     tempRow--;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempRow = row;
   while (
@@ -224,7 +224,7 @@ const calculateWinner = (squares, row, col, player) => {
   ) {
     count++;
     tempRow++;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempRow = row;
   if (count === 4) {
@@ -234,7 +234,7 @@ const calculateWinner = (squares, row, col, player) => {
     };
   }
   count = 0;
-  winLine = [{ row:tempRow, col:tempCol }];
+  winLine = [{ row: tempRow, col: tempCol }];
   while (
     tempRow + 1 <= 19 &&
     tempCol - 1 >= 0 &&
@@ -243,7 +243,7 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow++;
     tempCol--;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempRow = row;
   tempCol = col;
@@ -255,7 +255,7 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow--;
     tempCol++;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempRow = row;
   tempCol = col;
@@ -266,7 +266,7 @@ const calculateWinner = (squares, row, col, player) => {
     };
   }
   count = 0;
-  winLine = [{ row:tempRow, col:tempCol }];
+  winLine = [{ row: tempRow, col: tempCol }];
   while (
     tempRow + 1 <= 19 &&
     tempCol + 1 <= 19 &&
@@ -275,7 +275,7 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow++;
     tempCol++;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempRow = row;
   tempCol = col;
@@ -287,7 +287,7 @@ const calculateWinner = (squares, row, col, player) => {
     count++;
     tempRow--;
     tempCol--;
-    winLine.push({ row:tempRow, col:tempCol });
+    winLine.push({ row: tempRow, col: tempCol });
   }
   tempRow = row;
   tempCol = col;

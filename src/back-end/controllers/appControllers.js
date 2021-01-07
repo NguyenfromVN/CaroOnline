@@ -105,7 +105,7 @@ exports.create_board = function (req, res) {
 };
 
 exports.surrender = function (req, res) {
-  const { boardId } = req.body;
+  const { boardId } = req.query;
   Board.surrender(boardId, req.user.username, function (err, board) {
     if (err) return res.send(err);
     res.json(board);
