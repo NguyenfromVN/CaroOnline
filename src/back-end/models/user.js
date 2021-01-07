@@ -129,7 +129,7 @@ function User() {
       {
         win: winner.win + 1,
         trophy: winner.trophy + 1,
-        history: [...loser.history, { boardId, result: "win" }],
+        history: [...winner.history, { boardId, result: "win" }],
       },
       function (err, res) {}
     );
