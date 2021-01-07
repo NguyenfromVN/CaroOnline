@@ -37,7 +37,7 @@ const useStyles = makeStyles((theme) => ({
     },
     breadCrumbsBlock: {
         display: 'flex',
-        marginLeft: 700,
+        marginLeft: 950, //thích hợp cho browser có độ phóng to là 110%
     },
     link: {
         display: 'flex',

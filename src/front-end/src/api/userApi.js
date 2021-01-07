@@ -39,7 +39,7 @@ const userApi = {
         return response;
     },
     getBoard: async function (boardId) {
-        const url = '/board/get_board/'+boardId;
+        const url = '/board/get_board/' + boardId;
         let response;
         try {
             response = await axiosClient.get(url);
@@ -86,6 +86,13 @@ const userApi = {
     getRankingBoard: async function () {
         const url = '/get_leaderboard';
         const response = await axiosClient.get(url);
+        return response;
+    },
+    surrender: async function (boardId) {
+        const url = `/board/surrender`;
+        const response = await axiosClient.post(url, {
+            boardId: boardId,
+        });
         return response;
     }
 }
