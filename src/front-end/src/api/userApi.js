@@ -89,10 +89,8 @@ const userApi = {
         return response;
     },
     surrender: async function (boardId) {
-        const url = `/board/surrender`;
-        const response = await axiosClient.post(url, {
-            boardId: boardId,
-        });
+        const url = `/board/surrender?boardId=${boardId}`;
+        const response = await axiosClient.get(url);
         return response;
     }
 }

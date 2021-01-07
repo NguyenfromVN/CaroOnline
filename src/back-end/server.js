@@ -70,9 +70,9 @@ function removeActiveUser(userId) {
 }
 
 // helpers
-function isPlayersTopic(topic){
-  let arr=topic.split('-');
-  return (arr[arr.length - 1]=='players');
+function isPlayersTopic(topic) {
+  let arr = topic.split('-');
+  return (arr[arr.length - 1] == 'players');
 }
 
 // WEB SOCKET
@@ -102,12 +102,12 @@ const topics = (() => {
     console.log(topics);
   }
 
-  function broadcastChange(topicName) {
+  function broadcastChange(topicName, message) {
     if (!topics[topicName])
       return;
-    let msg=`${topicName}>>>has new updates`;
-    if (isPlayersTopic(topicName)){
-      msg=`${topicName}:${Object.keys(topics[topicName]).length}>>>has new updates`;
+    let msg = `${topicName}>>>` + (message ? message : 'has new updates');
+    if (isPlayersTopic(topicName)) {
+      msg = `${topicName}:${Object.keys(topics[topicName]).length}>>>` + (message ? message : 'has new updates');
     }
     for (let userId in topics[topicName]) {
       for (let socketId in topics[topicName][userId]) {
@@ -136,16 +136,18 @@ wss.on("connection", (socket, req) => {
   socket.on("message", (msg) => {
     console.log(`Message from user ${userId}:`);
     console.log(msg);
-    if (msg.split(">>>")[1] == "changed") {
-      // some changes happend
-        topics.broadcastChange(msg.split(">>>")[0]);
-    } else {
+    if (msg.split(">>>")[1] == "subscribe") {
       // want to subscribe a topic
-      topics.subscribeToTopic(msg.split(">>>")[0], socket, userId, socketId);
-      if (isPlayersTopic(msg.split(">>>")[0])){
+      const topic = msg.split('>>>')[0];
+      topics.subscribeToTopic(topic, socket, userId, socketId);
+      if (isPlayersTopic(topic)) {
         topics.broadcastChange(msg.split(">>>")[0]);
       }
       topicsList.push(msg.split(">>>")[0]);
+    } else {
+      // some changes happend
+      const message = msg.split('>>>')[1].split(':')[1];
+      topics.broadcastChange(msg.split(">>>")[0], message);
     }
   });
 
@@ -153,11 +155,11 @@ wss.on("connection", (socket, req) => {
     console.log(`User ${userId} disconnected`);
     topicsList.forEach((topic) => {
       topics.removeSubscription(topic, userId, socketId, socketId);
-      if (isPlayersTopic(topic)){
+      if (isPlayersTopic(topic)) {
         topics.broadcastChange(topic);
       }
     });
-    topicsList=[];
+    topicsList = [];
     removeActiveUser(userId);
     topics.broadcastChange('usersList');
   });

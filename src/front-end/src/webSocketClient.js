@@ -11,10 +11,11 @@ const ws = (() => {
         ws = new WebSocket("ws://localhost:3001?userId=" + userId);
         ws.addEventListener("message", ({ data: message }) => {
             let topicName = message.split(">>>")[0];
+            let msg = message.split(">>>")[1];
             // if (lazyUpdate[topicName] > 0)
             //     lazyUpdate[topicName] -= 1;
             // else
-            callback(topicName);
+            callback(topicName, msg);
         });
     }
 
@@ -24,8 +25,8 @@ const ws = (() => {
         ws = undefined;
     }
 
-    function notifyChange(topicName) {
-        ws.send(`${topicName}>>>changed`);
+    function notifyChange(topicName, msg) {
+        ws.send(`${topicName}>>>changed`+(msg ? `:${msg}` : ''));
         // lazyUpdate[topicName] = (lazyUpdate[topicName] | 0) + 1;
     }
 

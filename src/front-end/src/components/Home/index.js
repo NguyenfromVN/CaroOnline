@@ -93,7 +93,7 @@ export default function Home() {
             // set boards list
             setBoards(response);
             // init web socket client
-            ws.createConnection(localStorage.getItem('username'), (topicName) => {
+            ws.createConnection(localStorage.getItem('username'), (topicName, msg) => {
                 let callbacks = {
                     usersList: async () => {
                         let arr = await api.getUsers();

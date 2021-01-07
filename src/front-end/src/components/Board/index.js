@@ -41,7 +41,7 @@ export default function Board(props) {
             }
             setBoard(board);
             // init web socket client
-            ws.createConnection(localStorage.getItem('username'), (topicName) => {
+            ws.createConnection(localStorage.getItem('username'), (topicName, msg) => {
                 let callbacks = {
                     chat: async function () {
                         let newChat = await api.getBoardChat(boardId);
@@ -56,6 +56,9 @@ export default function Board(props) {
                 arr = arr.split('-');
                 let topic = arr[arr.length - 1];
                 if (callbacks[topic]) {
+                    if (topic=='board' && msg!='has new updates'){
+                        alert(msg);
+                    }
                     callbacks[topic]();
                 } else {
                     // players topic

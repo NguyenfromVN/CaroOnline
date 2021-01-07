@@ -1,4 +1,5 @@
 import React from 'react';
+import ws from '../../webSocketClient';
 import { Button } from '@material-ui/core';
 import api from '../../api/userApi';
 
@@ -12,7 +13,7 @@ const GameInfo = (props) => {
 
     const handleSurrender = async () => {
         const res = await api.surrender(boardId);
-        // api này trả về 1 trường duy nhất là winner -> cách lấy: res.winner
+        ws.notifyChange(`${props.board.boardId}-board`,`${username} surrendered!`);
     }
 
     return (
