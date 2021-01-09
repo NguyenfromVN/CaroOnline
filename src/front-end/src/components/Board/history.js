@@ -19,9 +19,9 @@ function GameHistory(props) {
                 jsx.push(
                     <Button variant="outlined" color={props.stepNum == i ? "secondary" : "primary"} onClick={() => handleClick(i)}
                         style={{
+                            width: '70%',
                             margin: "5px",
                             fontWeight: props.stepNum == i ? "bold" : "normal",
-                            backgroundColor: props.stepNum == i ? "yellow" : "white"
                         }}
                         disabled={!board.winner} //disable khi game đấu chưa kết thúc
                     >
@@ -32,13 +32,13 @@ function GameHistory(props) {
                 jsx.push(
                     <Button variant="outlined" color={props.stepNum == i ? "secondary" : "primary"} onClick={() => handleClick(i)}
                         style={{
+                            width: '70%',
                             margin: "5px",
                             fontWeight: props.stepNum == i ? "bold" : "normal",
-                            backgroundColor: props.stepNum == i ? "yellow" : "white"
                         }}
                         disabled={!board.winner} //disable khi game đấu chưa kết thúc
                     >
-                        Lượt thứ {i}
+                        {i}
                     </Button>
                 )
             }

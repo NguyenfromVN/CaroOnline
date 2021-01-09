@@ -198,7 +198,7 @@ function BoardItem(props) {
     const classes = useStyles();
     const board = props.boardItem;
     const history = useHistory();
-    let boardColor = (board.winner) ? "bisque" : (board.userId2) ? "aqua" : "yellow";
+    let boardColor = (board.winner) ? '#ebebeb' : (board.userId2) ? "#deffde" : "#ededff";
     let boardStatusText = (board.winner) ? "Finished" : (board.userId2) ? "Playing" : "Waiting";
 
     async function viewGame() {
@@ -207,26 +207,26 @@ function BoardItem(props) {
 
     return (
         <Grid item xs={12} sm={6} md={4}>
-            <Card variant="outlined" className={classes.card} style={{ border: "1px solid black" }}>
+            <Card variant="outlined" className={classes.card}>
                 <CardActionArea style={{ flexGrow: 1, backgroundColor: boardColor }}>
                     <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "blue", fontWeight: "bolder" }}>
+                        <Typography gutterBottom variant="h5" component="h2">
                             {board.boardId}
                         </Typography>
                         <Typography variant="body2" color="textPrimary" component="p">
-                            Owner: {board.userId1}
+                            Owner: <b>{board.userId1}</b>
                         </Typography>
                         <Typography variant="body2" color="textPrimary" component="p">
-                            Other: {board.userId2}
+                            Other: <b>{board.userId2}</b>
                         </Typography>
-                        <Typography variant="body2" color="textDefault" component="p" style={{ fontWeight: "bold" }}>
-                            Status: {boardStatusText}
+                        <Typography variant="body2" color="textDefault" component="p">
+                            Status: <b>{boardStatusText}</b>
                         </Typography>
                     </CardContent>
                 </CardActionArea>
                 {/* </Link> */}
                 <CardActions >
-                    <Button variant="outlined" color="primary" onClick={viewGame} style={{ color: 'red' }}>
+                    <Button variant="outlined" color="primary" onClick={viewGame}>
                         VIEW GAME
                 </Button>
                 </CardActions>
@@ -239,7 +239,7 @@ function UserItem(props) {
     const user = props.user;
     const history = useHistory();
 
-    let statusColor = (user.isActive ? "#00ff00" : "#aaaaaa");
+    let statusColor = (user.isActive ? "#29ba29" : "#d9d9d9");
 
     return (
         <div

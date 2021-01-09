@@ -84,7 +84,7 @@ export default function UserProfile() {
                 </div>
             </Container>
             <Container className={classes.cardGrid} maxWidth="md">
-                <Typography component="h1" variant="h5" style={{ marginBottom: 20, color: "orange" }}>
+                <Typography component="h1" variant="h5" style={{ marginBottom: 20, color: "#aaaaaa" }}>
                     LIST GAMES PLAYED
                 </Typography>
                 <Grid container spacing={4}>
@@ -100,7 +100,7 @@ function BoardItem(props) {
     const board = props.boardItem;
     const history = useHistory();
     const result = board.result;
-    let boardColor = (result == "lose") ? "bisque" : "aqua";
+    let boardColor = (result == "lose") ? "rgb(255, 242, 242)" : "rgb(222, 255, 222)";
 
     async function viewGame() {
         history.push(`/board?id=${board.boardId}`);
@@ -111,11 +111,11 @@ function BoardItem(props) {
             <Card variant="outlined" className={classes.card}>
                 <CardActionArea style={{ flexGrow: 1, backgroundColor: boardColor }}>
                     <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h4" component="h4" style={{ color: "blue" }}>
+                        <Typography gutterBottom variant="h4" component="h4">
                             {board.boardId}
                         </Typography>
-                        <Typography gutterBottom variant="h5" component="h5" style={{ color: "red" }}>
-                            Result: {result}
+                        <Typography gutterBottom variant="h5" component="h5">
+                            Result: <b>{result}</b>
                         </Typography>
                     </CardContent>
                 </CardActionArea>

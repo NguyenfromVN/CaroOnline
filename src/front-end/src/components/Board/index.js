@@ -134,14 +134,14 @@ export default function Board(props) {
     function renderSquares() {
         if (!board.boardId)
             return;
-        let squares = (board.winner && stepNum) ? board.history[stepNum].squares : board.history[board.history.length - 1].squares;
+        let squares = (board.winner && stepNum >= 0) ? board.history[stepNum].squares : board.history[board.history.length - 1].squares;
         let jsx = [];
         for (let i = 0; i < boardSize; i++) {
             let row = [];
             for (let j = 0; j < boardSize; j++) {
                 row.push(renderSquare({
                     value: squares[i * boardSize + j],
-                    highlight: isWinnerCell(i, j),
+                    highlight: (stepNum == board.history.length - 1 || stepNum === undefined ? isWinnerCell(i, j) : false),
                     onClick: () => takeTurn(i, j),
                 }));
             }
