@@ -105,13 +105,10 @@ function User() {
   };
 
   this.changePassword = function (email, result) {
-    console.log(email);
     UserModel.find({
       email: email, // search query
     })
-      .then((res) => {
-        console.log(res, 12);
-        
+      .then((res) => {        
         if (res.length !== 0) {
           sendChangePasswordMail(email, res[0].username);
           result(null, {
@@ -120,10 +117,8 @@ function User() {
         } else {
           result(null, { message: "No user has been found" });
         }
-        result(null, res);
       })
       .catch((err) => {
-        console.log(err, 2);
         result(null, { message: `error: ${err}` });
       });
   };
