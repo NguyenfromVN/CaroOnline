@@ -108,3 +108,29 @@
 .game-info-frame div {
     font-weight: bold;
 }
+
+.history-frame {
+    height: inherit;
+    /* background: #eeeeee; */
+    border: 0px;
+}
+
+.list-history {
+    height: inherit;
+    overflow-y: auto;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+
+.list-history::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+
+.list-history {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}

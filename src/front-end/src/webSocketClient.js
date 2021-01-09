@@ -26,17 +26,17 @@ const ws = (() => {
     }
 
     function notifyChange(topicName, msg) {
-        ws.send(`${topicName}>>>changed`+(msg ? `:${msg}` : ''));
+        ws.send(`${topicName}>>>changed` + (msg ? `:${msg}` : ''));
         // lazyUpdate[topicName] = (lazyUpdate[topicName] | 0) + 1;
     }
 
-    function subscribeTopic(topicName){
-        let msg=`${topicName}>>>subscribe`;
+    function subscribeTopic(topicName) {
+        let msg = `${topicName}>>>subscribe`;
         try {
             ws.send(msg);
-        } catch (e){
+        } catch (e) {
             // before connection create
-            setTimeout(()=>ws.send(msg),500);
+            setTimeout(() => ws.send(msg), 1000);
         }
     }
 

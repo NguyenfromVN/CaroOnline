@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     card: {
         height: '100%',
         display: 'flex',
-        flexDirection: 'column',
+        flexDirection: 'column'
     },
     cardMedia: {
         paddingTop: '56.25%', // 16:9
@@ -186,7 +186,7 @@ export default function Home() {
                         <div className='users-list'>
                             {usersList(users)}
                         </div>
-                        <RankingBoard rankingBoard={rankingBoard}/>
+                        <RankingBoard rankingBoard={rankingBoard} />
                     </div>
                 </div>
             </div>
@@ -198,6 +198,8 @@ function BoardItem(props) {
     const classes = useStyles();
     const board = props.boardItem;
     const history = useHistory();
+    let boardColor = (board.winner) ? "bisque" : (board.userId2) ? "aqua" : "yellow";
+    let boardStatusText = (board.winner) ? "Finished" : (board.userId2) ? "Playing" : "Waiting";
 
     async function viewGame() {
         history.push(`/board?id=${board.boardId}`);
@@ -205,26 +207,26 @@ function BoardItem(props) {
 
     return (
         <Grid item xs={12} sm={6} md={4}>
-            <Card variant="outlined" className={classes.card}>
-                <CardActionArea style={{ flexGrow: 1 }}>
+            <Card variant="outlined" className={classes.card} style={{ border: "1px solid black" }}>
+                <CardActionArea style={{ flexGrow: 1, backgroundColor: boardColor }}>
                     <CardContent className={classes.cardContent}>
-                        <Typography gutterBottom variant="h5" component="h2">
-                            {board.name}
-                        </Typography>
-                        <Typography gutterBottom variant="h5" component="h2">
+                        <Typography gutterBottom variant="h5" component="h2" style={{ color: "blue", fontWeight: "bolder" }}>
                             {board.boardId}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            {board.userId1}
+                        <Typography variant="body2" color="textPrimary" component="p">
+                            Owner: {board.userId1}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary" component="p">
-                            {board.userId2}
+                        <Typography variant="body2" color="textPrimary" component="p">
+                            Other: {board.userId2}
+                        </Typography>
+                        <Typography variant="body2" color="textDefault" component="p" style={{ fontWeight: "bold" }}>
+                            Status: {boardStatusText}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
                 {/* </Link> */}
                 <CardActions >
-                    <Button variant="outlined" color="primary" onClick={viewGame}>
+                    <Button variant="outlined" color="primary" onClick={viewGame} style={{ color: 'red' }}>
                         VIEW GAME
                 </Button>
                 </CardActions>

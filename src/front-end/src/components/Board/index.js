@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Square from './square';
 import Chat from './chat';
 import GameInfo from './gameInfo';
+import GameHistory from './history';
 import './index.css';
 import { useHistory } from 'react-router-dom';
 import api from '../../api/userApi';
@@ -28,6 +29,7 @@ export default function Board(props) {
     const [chat, setChat] = useState([]);
     const [isPlayer, setIsPlayer] = useState(false);
     const [isEmptyRoom, setIsEmptyRoom] = useState(false);
+    const [stepNum, setStepNum] = useState();
     const boardId = (new URL(document.location)).searchParams.get('id');
     const history = useHistory();
 
@@ -56,7 +58,7 @@ export default function Board(props) {
                 arr = arr.split('-');
                 let topic = arr[arr.length - 1];
                 if (callbacks[topic]) {
-                    if (topic=='board' && msg!='has new updates'){
+                    if (topic == 'board' && msg != 'has new updates') {
                         alert(msg);
                     }
                     callbacks[topic]();
@@ -157,8 +159,9 @@ export default function Board(props) {
     return (
         <div>
             <div className='board-game'>
-                <div>
+                <div style={{ height: "inherit" }}>
                     {/* for history */}
+                    <GameHistory board={board} setStepNum={setStepNum} stepNum={stepNum} />
                 </div>
                 <div>
                     <div>

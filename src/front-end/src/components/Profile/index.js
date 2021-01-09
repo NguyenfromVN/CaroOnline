@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const boardsList = boards => (
     boards.map((board) => {
-        if (board.boardId) { //kiểm tra boardID rỗng
+        if (board.boardId && board.result) { //kiểm tra boardID rỗng và đã kết thúc
             return (
                 <BoardItem key={board.boardId}
                     boardItem={board} />
@@ -99,6 +99,8 @@ function BoardItem(props) {
     const classes = useStyles();
     const board = props.boardItem;
     const history = useHistory();
+    const result = board.result;
+    let boardColor = (result == "lose") ? "bisque" : "aqua";
 
     async function viewGame() {
         history.push(`/board?id=${board.boardId}`);
@@ -107,13 +109,13 @@ function BoardItem(props) {
     return (
         <Grid item xs={12} sm={6} md={4}>
             <Card variant="outlined" className={classes.card}>
-                <CardActionArea style={{ flexGrow: 1 }}>
+                <CardActionArea style={{ flexGrow: 1, backgroundColor: boardColor }}>
                     <CardContent className={classes.cardContent}>
                         <Typography gutterBottom variant="h4" component="h4" style={{ color: "blue" }}>
                             {board.boardId}
                         </Typography>
                         <Typography gutterBottom variant="h5" component="h5" style={{ color: "red" }}>
-                            {board.result}
+                            Result: {result}
                         </Typography>
                     </CardContent>
                 </CardActionArea>
