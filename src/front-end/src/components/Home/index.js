@@ -219,7 +219,7 @@ function BoardItem(props) {
                         <Typography variant="body2" color="textPrimary" component="p">
                             Other: <b>{board.userId2}</b>
                         </Typography>
-                        <Typography variant="body2" color="textDefault" component="p">
+                        <Typography variant="body2" color="textPrimary" component="p">
                             Status: <b>{boardStatusText}</b>
                         </Typography>
                     </CardContent>
