@@ -134,7 +134,7 @@ export default function Board(props) {
     function renderSquares() {
         if (!board.boardId)
             return;
-        let squares = board.history[board.history.length - 1].squares;
+        let squares = (board.winner && stepNum) ? board.history[stepNum].squares : board.history[board.history.length - 1].squares;
         let jsx = [];
         for (let i = 0; i < boardSize; i++) {
             let row = [];
