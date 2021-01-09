@@ -103,6 +103,46 @@ function User() {
       }
     );
   };
+
+  this.changePassword = function (email, result) {
+    console.log(email);
+    UserModel.find({
+      email: email, // search query
+    })
+      .then((res) => {
+        console.log(res, 12);
+        
+        if (res.length !== 0) {
+          sendChangePasswordMail(email, res[0].username);
+          result(null, {
+            message: "Please go to your email to change your password",
+          });
+        } else {
+          result(null, { message: "No user has been found" });
+        }
+        result(null, res);
+      })
+      .catch((err) => {
+        console.log(err, 2);
+        result(null, { message: `error: ${err}` });
+      });
+  };
+
+  this.updatePassword = function (email, password, result) {
+    UserModel.updateOne(
+      { email },
+      {
+        password,
+      }
+    )
+      .then((res) => {
+        result(null, { message: "password changed" });
+      })
+      .catch((err) => {
+        result(null, err);
+      });
+  };
+
   this.getLeaderBoard = (result) => {
     UserModel.find({}, ["username", "trophy"], {
       skip: 0,
@@ -163,6 +203,33 @@ const sendValidatedMail = (email, username) => {
         to: email, // Địa chỉ email của người gửi
         subject: "Validate mail", // Tiêu đề mail
         text: `http://localhost:3000/validate?username=${username}`, // Nội dung mail dạng text
+      };
+      //Tiến hành gửi email
+      transporter.sendMail(mail, function (error, info) {
+        if (error) {
+          // nếu có lỗi
+          console.log(error);
+        } else {
+          //nếu thành công
+          console.log("Email sent: " + info.response);
+        }
+      });
+    }
+  });
+};
+const sendChangePasswordMail = (email, username) => {
+  transporter.verify((error, success) => {
+    // Nếu có lỗi.
+    if (error) {
+      console.log(error);
+    } else {
+      //Nếu thành công.
+      console.log("Kết nối thành công! Gửi mail đến " + email);
+      var mail = {
+        from: "hpesc1133@gmail.com", // Địa chỉ email của người gửi
+        to: email, // Địa chỉ email của người gửi
+        subject: "Change password mail", // Tiêu đề mail
+        text: `username: ${username} . Link: localhost:3000/change-password?email=${email}`, // Nội dung mail dạng text
       };
       //Tiến hành gửi email
       transporter.sendMail(mail, function (error, info) {

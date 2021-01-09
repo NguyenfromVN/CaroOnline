@@ -47,6 +47,8 @@ module.exports = function (app, passport) {
   app.route("/get_leaderboard").get(controller.get_leaderboard);
   app.route("/user/:username").get(controller.get_user_by_username);
   app.route("/login").post(controller.get_user_by_credential);
+  app.route("/change_password").post(controller.change_password);
+  app.route("/update_password").post(controller.update_password);
   app.route("/register").post(controller.add_user_by_credential);
   app.route("/validate/:username").post(controller.validate_user);
 
