@@ -13,6 +13,7 @@ let boardSchema = new mongoose.Schema({
   history: Array,
   chat: Array,
   winLine: Array,
+  lastTurn: Date,
 });
 
 //Tạo model
@@ -44,6 +45,7 @@ function Board() {
     col = parseInt(col);
     const currentBoard = await getBoard(boardId);
     const newStepNum = currentBoard.history.length;
+    const newLastTurn = new Date();
     const newNextTurn =
       currentBoard.nextTurn === currentBoard.userId1
         ? currentBoard.userId2
@@ -77,6 +79,7 @@ function Board() {
         nextTurn: newNextTurn,
         winner: newWinner,
         winLine: winnerCheck.winLine,
+        lastTurn: newLastTurn,
       },
       (err, res) => {
         if (err) return result(null, err);
@@ -113,6 +116,7 @@ function Board() {
       boardId,
       name,
       userId1,
+      lastTurn: null,
       nextTurn: userId1,
       history: [
         {
