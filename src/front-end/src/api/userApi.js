@@ -92,6 +92,23 @@ const userApi = {
         const url = `/board/surrender?boardId=${boardId}`;
         const response = await axiosClient.get(url);
         return response;
+    },
+    changePassword: async function (email) {
+        const url = "/change_password";
+        const response = await axiosClient.post(url,
+            {
+                email: email
+            });
+        return response;
+    },
+    updatePassword: async function (email, password) {
+        const url = "/update_password";
+        const response = await axiosClient.post(url,
+            {
+                email: email,
+                password: password,
+            });
+        return response;
     }
 }
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Avatar, Button, CssBaseline, TextField, Grid, Typography, makeStyles, Container } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import api from '../../api/userApi';
@@ -24,20 +24,24 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function RegisterForm() {
+export default function UpdatePassword() {
     const classes = useStyles();
     const history = useHistory();
 
-    const [email, setEmail] = useState('');
-    const [username, setUsername] = useState('');
+    let email = (new URL(document.location)).searchParams.get('email');
     const [password, setPassword] = useState('');
 
-    const handleRegister = async (e) => {
+    const handleUpdatePassword = async (e) => {
         e.preventDefault();
 
-        await api.register(email, username, password);
-        history.push('/check-mail');
-
+        const response = await api.updatePassword(email, password);
+        if (response.message == "password changed") {
+            alert("You have successfully changed your password. You can login now!");
+            localStorage.setItem("username", "");
+            localStorage.setItem("loginStatus", "false");
+            localStorage.setItem("token", "");
+            history.push("/signin");
+        }
     }
 
     return (
@@ -48,7 +52,7 @@ export default function RegisterForm() {
                     <LockOutlinedIcon />
                 </Avatar>
                 <Typography component="h1" variant="h5">
-                    Sign up
+                    Update Password
                 </Typography>
                 <form className={classes.form} method="POST">
                     <Grid container spacing={2}>
@@ -57,43 +61,15 @@ export default function RegisterForm() {
                                 variant="outlined"
                                 required
                                 fullWidth
-                                id="email"
-                                label="Email Address"
-                                name="email"
-                                autoComplete="email"
-                                onChange={(e) => {
-                                    setEmail(e.target.value);
-                                }}
-                                autoFocus
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                id="username"
-                                label="Username"
-                                name="username"
-                                autoComplete="username"
-                                onChange={(e) => {
-                                    setUsername(e.target.value);
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                variant="outlined"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
                                 id="password"
-                                autoComplete="current-password"
+                                label="Enter your new password"
+                                name="password"
+                                type="password"
+                                autoComplete="password"
                                 onChange={(e) => {
                                     setPassword(e.target.value);
                                 }}
+                                autoFocus
                             />
                         </Grid>
                     </Grid>
@@ -103,17 +79,10 @@ export default function RegisterForm() {
                         variant="contained"
                         color="primary"
                         className={classes.submit}
-                        onClick={handleRegister}
+                        onClick={handleUpdatePassword}
                     >
-                        Sign Up
+                        Submit
                     </Button>
-                    <Grid container justify="flex-end">
-                        <Grid item>
-                            <Link to='/signin' variant="body2" style={{ textDecoration: 'none' }}>
-                                Already have an account? Sign in
-                            </Link>
-                        </Grid>
-                    </Grid>
                 </form>
             </div>
         </Container>

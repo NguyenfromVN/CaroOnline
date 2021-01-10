@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme) => ({
-    container:{
+    container: {
         height: '500px',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
     },
-    notification:{
+    notification: {
         fontSize: '2.5vw',
         textAlign: 'center'
     }
@@ -20,8 +20,6 @@ export default function CheckMail(props) {
     return (
         <div className={classes.container}>
             <div className={classes.notification}>
-                <b>Register completed!</b>
-                <br/>
                 One more step, check out your mail to finish the comfirmation!
             </div>
         </div>

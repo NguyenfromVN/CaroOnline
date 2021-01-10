@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
-import { Avatar, Button, CssBaseline, TextField, Typography, makeStyles, Container } from '@material-ui/core';
+import { useHistory, Link } from 'react-router-dom';
+import { Avatar, Button, CssBaseline, TextField, Typography, makeStyles, Container, Grid } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import './index.css';
 import api from '../../api/userApi';
@@ -114,6 +114,13 @@ export default function Login(props) {
                     >
                         Sign In
                     </Button>
+                    <Grid container justify="flex-end" style={{ margin: "10px 0" }}>
+                        <Grid item>
+                            <Link to='/forgot-password' variant="body2" style={{ textDecoration: 'none' }}>
+                                Forgot password?
+                            </Link>
+                        </Grid>
+                    </Grid>
                     <div className='link'>
                         <button className='social-button' onClick={() => { window.location.href = 'http://localhost:3001/auth/fb' }}>
                             <img src={facebookImg} className='facebook-login-image' alt='facebook-img'></img>

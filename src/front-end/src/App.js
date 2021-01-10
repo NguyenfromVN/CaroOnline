@@ -13,6 +13,8 @@ import CheckMail from './components/CheckMail';
 import MailValidate from './components/MailValidate';
 import Profile from './components/Profile';
 import Google from './components/Google';
+import ForgotPassword from './components/ForgotPassword';
+import UpdatePassword from './components/UpdatePassword';
 
 function Copyright() {
     return (
@@ -145,6 +147,8 @@ function App() {
                             <Route path='/validate' exact component={MailValidate} />
                             <Route path='/detail' exact component={Profile} />
                             <Route path='/google' exact component={() => (<Google handleChangeLoginStatus={handleChangeLoginStatus} />)} />
+                            <Route path='/forgot-password' exact component={ForgotPassword} />
+                            <Route path='/change-password' exact component={UpdatePassword} />
                         </Switch>
                     </main>
                     {/* Footer */}
