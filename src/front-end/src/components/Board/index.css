@@ -11,7 +11,7 @@
 
 .board-game {
     display: grid;
-    height: 600px;
+    height: 610px;
     grid-template-columns: 1fr 9fr 5fr;
 }
 
