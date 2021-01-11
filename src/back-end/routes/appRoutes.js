@@ -42,6 +42,7 @@ module.exports = function (app, passport) {
   protectedRoutes.get("/get_board_history", controller.get_board_history);
   protectedRoutes.get("/make_message", controller.make_message);
   protectedRoutes.get("/surrender", controller.surrender);
+  protectedRoutes.get("/force_win", controller.force_win);
 
   // user Routes
   app.route("/get_leaderboard").get(controller.get_leaderboard);

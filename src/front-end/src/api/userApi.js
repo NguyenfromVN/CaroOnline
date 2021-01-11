@@ -93,6 +93,11 @@ const userApi = {
         const response = await axiosClient.get(url);
         return response;
     },
+    forceWin: async function (boardId) {
+        const url = `/board/force_win?boardId=${boardId}`;
+        const response = await axiosClient.get(url);
+        return response;
+    },
     changePassword: async function (email) {
         const url = "/change_password";
         const response = await axiosClient.post(url,

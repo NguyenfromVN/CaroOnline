@@ -109,6 +109,24 @@ function Board() {
     );
   };
 
+  this.force_win = async function (boardId, username, result) {
+    const currentBoard = await getBoard(boardId);
+    console.log(currentBoard);
+    const newWinner = username;
+    record = await User.setPlayerTrophy(newWinner, currentBoard.nextTurn, boardId);
+
+    BoardModel.updateOne(
+      { boardId },
+      {
+        winner: newWinner,
+      },
+      (err, res) => {
+        if (err) return result(null, err);
+        result(null, { winner: newWinner, record });
+      }
+    );
+  };
+
   // Chức năng thêm board mới
   this.createBoard = async function (boardId, name, userId1, result) {
     let squares = [...Array(BOARD_SIZE).fill(null)];

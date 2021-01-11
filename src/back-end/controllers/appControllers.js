@@ -131,6 +131,14 @@ exports.surrender = function (req, res) {
   });
 };
 
+exports.force_win = function (req, res) {
+  const { boardId } = req.query;
+  Board.force_win(boardId, req.user.username, function (err, board) {
+    if (err) return res.send(err);
+    res.json(board);
+  });
+};
+
 exports.get_all_boards = function (req, res) {
   Board.getAllBoards(function (err, board) {
     if (err) return res.send(err);
