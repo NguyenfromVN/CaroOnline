@@ -75,6 +75,10 @@ function isPlayersTopic(topic) {
   return (arr[arr.length - 1] == 'players');
 }
 
+function isInvitation(message) {
+  return (message.split('-')[0] == 'invite');
+}
+
 // WEB SOCKET
 const topics = (() => {
   // private
@@ -109,6 +113,9 @@ const topics = (() => {
     if (isPlayersTopic(topicName)) {
       msg = `${topicName}:${Object.keys(topics[topicName]).length}>>>` + (message ? message : 'has new updates');
     }
+    if (message && isInvitation(message)) {
+      msg = `${topicName}>>>` + message;
+    }
     for (let userId in topics[topicName]) {
       for (let socketId in topics[topicName][userId]) {
         let socket = topics[topicName][userId][socketId];
@@ -127,9 +134,10 @@ const topics = (() => {
 wss.on("connection", (socket, req) => {
   // each user can have more than one connection, each connection will be identified by a random number
   // each connection can have a lot of following topics, so use an array to store these
-  let topicsList = [];
   let userId = decodeURI(req.url.split("?")[1].split("=")[1]);
+  let topicsList = [`private-${userId}`]; // default topic, for private notification
   let socketId = Math.random();
+  topics.subscribeToTopic(`private-${userId}`, socket, userId, socketId);
   addNewActiveUser(userId);
   topics.broadcastChange("usersList");
 

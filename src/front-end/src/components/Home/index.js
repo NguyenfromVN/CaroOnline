@@ -93,7 +93,9 @@ export default function Home() {
             // set boards list
             setBoards(response);
             // init web socket client
-            ws.createConnection(localStorage.getItem('username'), (topicName, msg) => {
+            const username = localStorage.getItem('username');
+            const privateTopic = `private-${username}`;
+            ws.createConnection(username, async (topicName, msg) => {
                 let callbacks = {
                     usersList: async () => {
                         let arr = await api.getUsers();
@@ -104,9 +106,27 @@ export default function Home() {
                         setBoards(arr);
                     },
                 };
-                const topic = topicName.split('>>>')[0];
-                if (callbacks[topic]) {
-                    callbacks[topic]();
+                callbacks[privateTopic] = async () => {
+                    if (msg.split('-')[0] == 'invite') {
+                        // recieve invitation
+                        const boardId = msg.split('-')[1];
+                        const accepted = window.confirm(`You are invited to board ${boardId}. Accept it?`);
+                        const invitedBoard = await api.getBoard(boardId);
+                        if (accepted) {
+                            // join game and redirect to board screen
+                            await api.joinBoard(boardId);
+                            history.push(`/board?id=${boardId}`);
+                            ws.notifyChange(`private-${invitedBoard.userId1}`, `invitation-User ${username} accepted your invitation!`);
+                        } else {
+                            ws.notifyChange(`private-${invitedBoard.userId1}`, `invitation-User ${username} refused your invitation!`);
+                        }
+                    } else {
+                        // invitation response                      
+                        alert(msg.split('-')[1]);
+                    }
+                };
+                if (callbacks[topicName]) {
+                    callbacks[topicName]();
                 }
             });
             ws.subscribeTopic('boardsList');
@@ -250,49 +270,27 @@ function UserItem(props) {
     };
 
     const handleClose = (e) => {
-        e.stopPropagation();
         setOpen(false);
         setBoardName('');
     };
 
     const handleInvite = async (e) => {
-        e.stopPropagation();
         const board = await api.getBoard(boardName);
         if (board.boardId && username == board.userId1 && !board.userId2 && !board.winner) {
-            console.log("success");
-            //gọi api invite tại đây (Nguyên)
+            ws.notifyChange(`private-${user.username}`, `invite-${boardName}`);
         } else {
-            alert("Cannot invite.");
-            handleClose(e);
+            alert("Can not invite. Check your board name again!");
         }
-
+        handleClose(e);
     }
 
     return (
-        <div
-            className="user-item"
-            onClick={() => {
-                history.push(`/detail?user=${user.username}`);
-            }}
-        >
-            <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
-            <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
-            <div style={{ flexGrow: 1 }}></div>
-            <button
-                style={{
-                    width: "4rem",
-                    margin: "5px",
-                    ...(user.username == localStorage.getItem('username') ? { display: "none" } : {}),
-                    cursor: "pointer"
-                }}
-                disabled={!user.isActive}
-                onClick={handleClickOpen}
-            >Invite</button>
+        <React.Fragment>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-                <DialogTitle id="form-dialog-title">Invite player</DialogTitle>
+                <DialogTitle id="form-dialog-title">Invite player {user.username}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        To invite another player, please create a new board.
+                        Input a board name that is yours and currently empty
                     </DialogContentText>
                     <TextField
                         autoFocus
@@ -315,7 +313,27 @@ function UserItem(props) {
                     </DialogActions>
                 </DialogContent>
             </Dialog>
-        </div>
+            <div
+                className="user-item"
+                onClick={() => {
+                    history.push(`/detail?user=${user.username}`);
+                }}
+            >
+                <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
+                <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
+                <div style={{ flexGrow: 1 }}></div>
+                <button
+                    style={{
+                        width: "4rem",
+                        margin: "5px",
+                        ...(user.username == localStorage.getItem('username') ? { display: "none" } : {}),
+                        cursor: "pointer"
+                    }}
+                    disabled={!user.isActive}
+                    onClick={handleClickOpen}
+                >Invite</button>
+            </div>
+        </React.Fragment>
     );
 }
 
