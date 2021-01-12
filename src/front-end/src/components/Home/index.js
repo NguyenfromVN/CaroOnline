@@ -238,8 +238,35 @@ function BoardItem(props) {
 function UserItem(props) {
     const user = props.user;
     const history = useHistory();
+    const [boardName, setBoardName] = useState('');
+    const [open, setOpen] = React.useState(false);
+    const username = localStorage.getItem("username");
 
     let statusColor = (user.isActive ? "#29ba29" : "#d9d9d9");
+
+    const handleClickOpen = (e) => {
+        e.stopPropagation();
+        setOpen(true);
+    };
+
+    const handleClose = (e) => {
+        e.stopPropagation();
+        setOpen(false);
+        setBoardName('');
+    };
+
+    const handleInvite = async (e) => {
+        e.stopPropagation();
+        const board = await api.getBoard(boardName);
+        if (board.boardId && username == board.userId1 && !board.userId2 && !board.winner) {
+            console.log("success");
+            //gọi api invite tại đây (Nguyên)
+        } else {
+            alert("Cannot invite.");
+            handleClose(e);
+        }
+
+    }
 
     return (
         <div
@@ -259,10 +286,35 @@ function UserItem(props) {
                     cursor: "pointer"
                 }}
                 disabled={!user.isActive}
-                onClick={e => {
-                    e.stopPropagation();
-                }}
+                onClick={handleClickOpen}
             >Invite</button>
+            <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
+                <DialogTitle id="form-dialog-title">Invite player</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                        To invite another player, please create a new board.
+                    </DialogContentText>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        id="name"
+                        label="Name"
+                        variant="outlined"
+                        fullWidth
+                        onChange={e => {
+                            setBoardName(e.target.value);
+                        }}
+                    />
+                    <DialogActions>
+                        <Button onClick={handleClose} color="primary">
+                            Cancel
+                            </Button>
+                        <Button type="submit" color="primary" onClick={handleInvite}>
+                            Invite
+                        </Button>
+                    </DialogActions>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

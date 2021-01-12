@@ -100,7 +100,7 @@ function BoardItem(props) {
     const board = props.boardItem;
     const history = useHistory();
     const result = board.result;
-    let boardColor = (result == "lose") ? "rgb(255, 242, 242)" : "rgb(222, 255, 222)";
+    let boardColor = (result == "lose") ? "rgb(255, 242, 242)" : (result == "win" ? "rgb(222, 255, 222)" : "#ededff");
 
     async function viewGame() {
         history.push(`/board?id=${board.boardId}`);
