@@ -211,7 +211,7 @@ function Board() {
     BoardModel.updateOne(
       { boardId },
       {
-        winner: 'Draw game',
+        winner: 'draw game',
       },
       (err, res) => {
         if (err) return result(null, {message: "error" + err});

@@ -114,9 +114,8 @@ export default function Home() {
                     if (msg.split('-')[0] == 'invite') {
                         // recieve invitation
                         const boardId = msg.split('-')[1];
-                        const accepted = window.confirm(`You are invited to board ${boardId}. Accept it?`);
                         const invitedBoard = await api.getBoard(boardId);
-                        if (accepted) {
+                        if (window.confirm(`You are invited to board ${boardId}. Accept it?`)) {
                             // join game and redirect to board screen
                             await api.joinBoard(boardId);
                             history.push(`/board?id=${boardId}`);

@@ -115,12 +115,17 @@ const userApi = {
             });
         return response;
     },
+    drawGame: async function (boardId) {
+        const url = "/board/draw_game?boardId="+boardId;
+        const response = await axiosClient.get(url);
+        return response;
+    },
     //API for Admin
     searchUsers: async function (username, keyword) {
         const url = `/admin/search_user?keyword=${keyword}`;
         const response = await axiosClient.get(url);
         return response;
-    }
+    },
 }
 
 export default userApi;

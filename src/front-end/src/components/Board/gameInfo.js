@@ -3,7 +3,7 @@ import ws from '../../webSocketClient';
 import { Button } from '@material-ui/core';
 import api from '../../api/userApi';
 
-const time = 21000; // time for each turn, 21 seconds
+const time = 61000; // time for each turn, 61 seconds
 
 function getTimer(countdown) {
     if (countdown >= 10) {
@@ -70,11 +70,15 @@ const GameInfo = (props) => {
         ws.notifyChange(`${props.board.boardId}-board`, `${username} surrendered!`);
     }
 
+    function drawRequestHandler(){
+        ws.notifyChange(`${props.board.boardId}-board`, `${username} requested for a draw!`);
+    }
+
     return (
         <div className="game-info-frame">
             <div>Winner: {winnerText}</div>
             <div>Next turn: {props.board.winner ? '---' : nextTurnText}</div>
-            <Button variant="outlined" color="primary" style={{ margin: "5px 5px" }} disabled={!isPlayer || !!props.board.winner}>
+            <Button onClick={drawRequestHandler} variant="outlined" color="primary" style={{ margin: "5px 5px" }} disabled={!isPlayer || !!props.board.winner}>
                 Draw request
             </Button>
             <Button onClick={handleSurrender} variant="outlined" color="secondary" style={{ margin: "5px 5px" }} disabled={!isPlayer || !!props.board.winner}>

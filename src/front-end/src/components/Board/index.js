@@ -43,7 +43,7 @@ export default function Board(props) {
             }
             setBoard(board);
             // init web socket client
-            ws.createConnection(localStorage.getItem('username'), (topicName, msg) => {
+            ws.createConnection(localStorage.getItem('username'), async (topicName, msg) => {
                 let callbacks = {
                     chat: async function () {
                         let newChat = await api.getBoardChat(boardId);
@@ -59,7 +59,22 @@ export default function Board(props) {
                 let topic = arr[arr.length - 1];
                 if (callbacks[topic]) {
                     if (topic == 'board' && msg != 'has new updates') {
-                        alert(msg);
+                        if (msg.includes('requested for a draw') && isPlayer) {
+                            const username = localStorage.getItem('username');
+                            const sender = msg.replace(' requested for a draw!', '');
+                            if (username != sender) {
+                                if (window.confirm(msg + ' Accept it?')) {
+                                    await api.drawGame(board.boardId);
+                                    ws.notifyChange(`${board.boardId}-board`, `${username} accepted the request!`);
+                                } else {
+                                    ws.notifyChange(`${board.boardId}-board`, `${username} rejected the request!`);
+                                }
+                            } else {
+                                alert(msg);
+                            }
+                        } else {
+                            alert(msg);
+                        }
                     }
                     callbacks[topic]();
                 } else {

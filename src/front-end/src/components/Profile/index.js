@@ -79,6 +79,7 @@ export default function UserProfile() {
                         <div>Games played: <b>{(user.win || 0) + (user.lose || 0)}</b></div><br />
                         <div>Games won: <b>{user.win}</b></div><br />
                         <div>Games lost: <b>{user.lose}</b></div><br />
+                        <div>Games drawn: <b>{user.draw}</b></div><br />
                         <div>Trophy: <b>{user.trophy}</b></div>
                     </div>
                 </div>
