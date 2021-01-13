@@ -57,6 +57,8 @@ export default function Login(props) {
         if (response.message) {
             if (response.message == 'Invalid') {
                 alert("Username or password is not correct. Please try again!");
+            } else if (response.message == 'Account is blocked') {
+                alert('Oops! Your account is blocked!');
             } else {
                 alert("Check out your email to validate this account!");
             }

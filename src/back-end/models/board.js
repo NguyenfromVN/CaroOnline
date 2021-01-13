@@ -162,7 +162,7 @@ function Board() {
     const hiddenRoom = JSON.parse(JSON.stringify(allHidden))
     if(allHidden.length > 0){
       return await BoardModel.updateOne({ boardId: allHidden[0].boardId }, { userId2: userId, hidden: false }, (err,res)=>{
-        result(null, {...hiddenRoom})
+        result(null, {...hiddenRoom[0], hidden: false})
       })
     }
     let randomBoardId = '';
@@ -179,6 +179,7 @@ function Board() {
       lastTurn: null,
       nextTurn: userId,
       hidden: true,
+      chat: [],
       history: [
         {
           squares,
@@ -206,7 +207,7 @@ function Board() {
   this.drawGame = async (boardId,result) => {
     const currentBoard = await getBoard(boardId);
 
-    const final = await User.setPlayerDraw(currentBoard.userId1, currentBoard.userId2);
+    const final = await User.setPlayerDraw(currentBoard.userId1, currentBoard.userId2, boardId);
 
     BoardModel.updateOne(
       { boardId },

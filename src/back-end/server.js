@@ -52,7 +52,7 @@ app.get('/users', (req, res) => {
       if (user.username == 'Admin') {
         return;
       }
-      arr.push({ username: user.username, isActive: false, email: user.email });
+      arr.push({ username: user.username, isActive: false, email: user.email, block: user.block });
       if (activeUsers[user.username]) {
         arr[arr.length - 1].isActive = true;
       }

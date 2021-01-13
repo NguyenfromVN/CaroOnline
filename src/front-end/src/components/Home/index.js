@@ -57,14 +57,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-const boardsList = boards => (
-    boards.map((board) => {
-        return (
-            <BoardItem key={board.boardId}
-                boardItem={board} />
-        );
-    })
-);
+const boardsList = boards => {
+    const arr = [];
+    boards.forEach(board => {
+        if (board.hidden) {
+            return;
+        }
+        arr.push(<BoardItem key={board.boardId}
+            boardItem={board} />);
+    });
+    return arr;
+};
 
 const usersList = (users, isAdmin) => (
     users.map(user => {
@@ -171,7 +174,6 @@ export default function Home() {
     }
 
     async function handleFindUsersByUsernameOrEmail() {
-        // TODO
         const users = await api.searchUsers(username, searchedBoardIdText);
         if (users.length > 0) {
             history.push({
@@ -329,9 +331,10 @@ function UserItem(props) {
         handleClose(e);
     }
 
-    function handleBlockUser(e) {
-        // TODO
+    async function handleBlockUser(e) {
         e.stopPropagation();
+        await api.blockUser(user.username);
+        ws.notifyChange('usersList');
     }
 
     function userItemActionButton() {
@@ -345,6 +348,7 @@ function UserItem(props) {
                         cursor: "pointer"
                     }}
                     onClick={handleBlockUser}
+                    disabled={user.block}
                 >Block</button>
             );
         }
@@ -409,6 +413,7 @@ function UserItem(props) {
 function AddBoardDialog(props) {
     const [open, setOpen] = React.useState(false);
     const [nameText, setNameText] = React.useState('');
+    const history = useHistory();
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -433,10 +438,23 @@ function AddBoardDialog(props) {
         ws.notifyChange('boardsList');
     }
 
+    async function handleFastPlay() {
+        const hiddenRoom = await api.fastPlay();
+        if (!hiddenRoom.hidden) {
+            history.push('/board?id=' + hiddenRoom.boardId);
+        } else {
+            history.push('/board?id=' + hiddenRoom.boardId);
+            setTimeout(() => alert('Wait here, another player will be available soon!'), 2000);
+        }
+    }
+
     return (
         <div style={{ position: 'absolute' }}>
             <Button variant="outlined" color="primary" onClick={handleClickOpen}>
                 Create game
+            </Button>
+            <Button style={{ marginLeft: '15px' }} variant="outlined" color="primary" onClick={handleFastPlay}>
+                Fast play
             </Button>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Create game</DialogTitle>
