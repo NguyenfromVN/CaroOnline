@@ -14,6 +14,7 @@ let boardSchema = new mongoose.Schema({
   chat: Array,
   winLine: Array,
   lastTurn: Number,
+  hidden: Boolean
 });
 
 //Tạo model
@@ -136,6 +137,7 @@ function Board() {
       userId1,
       lastTurn: null,
       nextTurn: userId1,
+      hidden: false,
       history: [
         {
           squares,
@@ -152,6 +154,42 @@ function Board() {
         return result(null, "An error happened!");
       }
       result(null, "Success");
+    });
+  };
+
+  this.fastPlay = async function (userId, result) {
+    const allHidden = await BoardModel.find({hidden: true})
+    const hiddenRoom = JSON.parse(JSON.stringify(allHidden))
+    if(allHidden.length > 0){
+      return await BoardModel.updateOne({ boardId: allHidden[0].boardId }, { userId2: userId, hidden: false }, (err,res)=>{
+        result(null, {...hiddenRoom})
+      })
+    }
+    let randomBoardId = '';
+    let checkDuplicate = null
+    do {
+      randomBoardId = `Random room (${Math.random()})`;
+      checkDuplicate = await getBoard(randomBoardId);
+    } while (checkDuplicate)
+    let squares = [...Array(BOARD_SIZE).fill(null)];
+    const data = {
+      boardId: randomBoardId,
+      name: randomBoardId,
+      userId1: userId,
+      lastTurn: null,
+      nextTurn: userId,
+      hidden: true,
+      history: [
+        {
+          squares,
+        },
+      ],
+    };
+    BoardModel.create(data, function (err, res) {
+      if (err) {
+        return result(null, result({message: "error " + err}));
+      }
+      result(null,{...data});
     });
   };
 

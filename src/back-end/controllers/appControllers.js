@@ -17,7 +17,7 @@ exports.get_user_by_credential = function (req, res) {
     if (!user.isValidated) {
       res.status(401).send({ message: "Account is not validated" });
       return;
-    } else if(user.block) {
+    } else if (user.block) {
       res.status(401).send({ message: "Account is blocked" });
       return;
     }
@@ -57,7 +57,7 @@ exports.change_password = function (req, res) {
 };
 
 exports.update_password = function (req, res) {
-  User.updatePassword(req.body.email,req.body.password, function (err, mes) {
+  User.updatePassword(req.body.email, req.body.password, function (err, mes) {
     if (err) return res.send(err);
     res.json(mes);
   });
@@ -104,7 +104,12 @@ exports.get_grid = function (req, res) {
     res.send(grid);
   });
 };
-
+exports.fast_play = function (req, res) {
+  Board.fastPlay(req.user.username, function (err, mes) {
+    if (err) return res.send(err);
+    res.json(mes);
+  });
+};
 exports.get_board_by_id = function (req, res) {
   const boardId = req.params.id;
   Board.getBoardbyId(boardId, function (err, board) {
@@ -149,8 +154,6 @@ exports.surrender = function (req, res) {
     res.json(board);
   });
 };
-
-
 
 exports.draw_game = function (req, res) {
   const { boardId } = req.query;

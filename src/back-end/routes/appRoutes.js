@@ -44,6 +44,7 @@ module.exports = function (app, passport) {
   protectedRoutes.get("/surrender", controller.surrender);
   protectedRoutes.get("/force_win", controller.force_win);
   protectedRoutes.get("/draw_game", controller.draw_game);
+  protectedRoutes.get("/fast_play", controller.fast_play);
 
   app.use("/admin", protectedRoutes);
   protectedRoutes.get("/block_user", controller.block_user);
@@ -65,11 +66,16 @@ module.exports = function (app, passport) {
     passport.authenticate("facebook", {
       failureRedirect: `${config.FRONTEND_HOST}/error`,
     }),
-    (req, res) => {
-      res.json({
-        user: req.user,
-        token: jsonwebtoken.sign({ user: req.user }, "RESTFULAPIs"),
-      });
+    function (req, res) {
+      res.redirect(
+        url.format({
+          pathname: `${config.FRONTEND_HOST}/google`,
+          query: {
+            user: req.user.username,
+            token: jsonwebtoken.sign({ user: req.user }, "RESTFULAPIs"),
+          },
+        })
+      );
     }
   );
 
@@ -83,7 +89,7 @@ module.exports = function (app, passport) {
     function (req, res) {
       res.redirect(
         url.format({
-          pathname: "http://localhost:3000/google",
+          pathname: `${config.FRONTEND_HOST}/google`,
           query: {
             user: req.user.username,
             token: jsonwebtoken.sign({ user: req.user }, "RESTFULAPIs"),

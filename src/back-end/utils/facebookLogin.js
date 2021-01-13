@@ -10,7 +10,7 @@ module.exports = function (passport) {
         clientID: config.FACEBOOK_CLIENT_ID,
         clientSecret: config.FACEBOOK_CLIENT_SECRET,
         //URL nhận giá trị trả về
-        callbackURL: "http://localhost:3001/auth/fb/cb",
+        callbackURL: `${config.BACKEND_HOST}/auth/fb/cb`,
         //Các trường dữ liệu yêu cầu fb trả về
         profileFields: ["email", "name"],
         enableProof: true,

@@ -7,7 +7,7 @@ module.exports = function (passport) {
       {
         clientID: config.GOOGLE_CLIENT_ID,
         clientSecret: config.GOOGLE_CLIENT_SECRET,
-        callbackURL: "http://localhost:3001/auth/google/callback",
+        callbackURL: `${config.BACKEND_HOST}/auth/google/callback`,
         profileFields: ["email", "name"],
       },
       function (accessToken, refreshToken, profile, done) {
