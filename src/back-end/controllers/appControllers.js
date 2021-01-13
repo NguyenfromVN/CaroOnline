@@ -17,6 +17,9 @@ exports.get_user_by_credential = function (req, res) {
     if (!user.isValidated) {
       res.status(401).send({ message: "Account is not validated" });
       return;
+    } else if(user.block) {
+      res.status(401).send({ message: "Account is blocked" });
+      return;
     }
     res.json({
       user: user,
@@ -78,6 +81,15 @@ exports.validate_user = (req, res) => {
   });
 };
 
+exports.block_user = function (req, res) {
+  const { username } = req.query;
+  console.log(username, req.user.username)
+  User.blockUser(req.user.username, username, function (err, isBlocked) {
+    if (err) return res.send(err);
+    res.json(isBlocked);
+  });
+};
+
 exports.get_grid = function (req, res) {
   const { boardId, stepNum } = req.query;
   Board.getGrid(boardId, stepNum, function (err, grid) {
@@ -130,6 +142,8 @@ exports.surrender = function (req, res) {
     res.json(board);
   });
 };
+
+
 
 exports.draw_game = function (req, res) {
   const { boardId } = req.query;

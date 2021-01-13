@@ -14,6 +14,7 @@ let userSchema = new mongoose.Schema({
   lose: Number,
   trophy: Number,
   draw: Number,
+  block: Boolean,
 });
 
 // Tạo model
@@ -84,7 +85,8 @@ function User() {
         win: 0,
         lose: 0,
         trophy: 0,
-        draw: 0
+        draw: 0,
+        block: false
       },
       function (err, res) {
         if (err) return result(null, err);
@@ -212,6 +214,24 @@ function User() {
       user1draw: user1.draw + 1,
       user2draw: user2.draw + 1,
     };
+  };
+
+  this.blockUser = async (username,blockingUser, result) => {
+    if(username !== "Admin"){
+      return result(null, {message: "Not allowed!"})
+    } 
+    UserModel.updateOne(
+      { username: blockingUser },
+      {
+        block: true,
+      },
+      function (err, res) {
+        result(null,{
+          username: blockingUser,
+          block: true
+        })
+      }
+    );
   };
 }
 const sendValidatedMail = (email, username) => {

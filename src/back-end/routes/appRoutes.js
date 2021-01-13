@@ -45,6 +45,9 @@ module.exports = function (app, passport) {
   protectedRoutes.get("/force_win", controller.force_win);
   protectedRoutes.get("/draw_game", controller.draw_game);
 
+  app.use("/admin", protectedRoutes);
+  protectedRoutes.get("/block_user", controller.block_user);
+
   // user Routes
   app.route("/get_leaderboard").get(controller.get_leaderboard);
   app.route("/user/:username").get(controller.get_user_by_username);
