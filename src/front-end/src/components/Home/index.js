@@ -66,10 +66,10 @@ const boardsList = boards => (
     })
 );
 
-const usersList = users => (
+const usersList = (users, isAdmin) => (
     users.map(user => {
         return (
-            <UserItem key={user.username} user={user} />
+            <UserItem key={user.username} user={user} isAdmin={isAdmin} />
         );
     })
 );
@@ -81,6 +81,7 @@ export default function Home() {
     const [searchedBoardIdText, setSearchedBoardIdText] = useState('');
     const [rankingBoard, setRankingBoard] = useState([]);
     const history = useHistory();
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -92,6 +93,8 @@ export default function Home() {
             }
             // set boards list
             setBoards(response);
+            // set isAdmin
+            setIsAdmin(localStorage.getItem('username') == 'Admin');
             // init web socket client
             const username = localStorage.getItem('username');
             const privateTopic = `private-${username}`;
@@ -167,34 +170,66 @@ export default function Home() {
         }
     }
 
+    async function handleFindUsersByUsernameOrEmail() {
+        // TODO
+    }
+
+    function topLeftTextbox() {
+        if (isAdmin)
+            return (
+                <Container className={classes.cardGrid} maxWidth="md">
+                    <Grid container spacing={4}>
+                        <Grid item xs={12} sm={4} md={4}>
+                            <Paper variant="outlined" style={{ display: 'flex' }}>
+                                <InputBase
+                                    className={classes.input}
+                                    placeholder="Find users by username/email"
+                                    inputProps={{ 'aria-label': 'Find users by username/email' }}
+                                    onChange={(e) => {
+                                        setSearchedBoardIdText(e.target.value)
+                                    }}
+                                />
+                                <IconButton onClick={handleFindUsersByUsernameOrEmail} className={classes.iconButton} aria-label="Find">
+                                    <ArrowForwardIcon />
+                                </IconButton>
+                            </Paper>
+                        </Grid>
+                    </Grid>
+                </Container>
+            );
+        return (
+            <Container className={classes.cardGrid} maxWidth="md">
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={4} md={4}>
+                        <Paper variant="outlined" style={{ display: 'flex' }}>
+                            <InputBase
+                                className={classes.input}
+                                placeholder="Join game by id/key"
+                                inputProps={{ 'aria-label': 'join game by key' }}
+                                onChange={(e) => {
+                                    setSearchedBoardIdText(e.target.value)
+                                }}
+                            />
+                            <IconButton onClick={handleJoinGameById} className={classes.iconButton} aria-label="join">
+                                <ArrowForwardIcon />
+                            </IconButton>
+                        </Paper>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={4}>
+                    <Grid item xs={12} sm={4} md={4}>
+                        <AddBoardDialog callback={setBoards} />
+                    </Grid>
+                </Grid>
+            </Container>
+        );
+    }
+
     return (
         <main>
             <div className="home-container">
                 <div>
-                    <Container className={classes.cardGrid} maxWidth="md">
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} sm={4} md={4}>
-                                <Paper variant="outlined" style={{ display: 'flex' }}>
-                                    <InputBase
-                                        className={classes.input}
-                                        placeholder="Join game by id/key"
-                                        inputProps={{ 'aria-label': 'join game by key' }}
-                                        onChange={(e) => {
-                                            setSearchedBoardIdText(e.target.value)
-                                        }}
-                                    />
-                                    <IconButton onClick={handleJoinGameById} className={classes.iconButton} aria-label="join">
-                                        <ArrowForwardIcon />
-                                    </IconButton>
-                                </Paper>
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={4}>
-                            <Grid item xs={12} sm={4} md={4}>
-                                <AddBoardDialog callback={setBoards} />
-                            </Grid>
-                        </Grid>
-                    </Container>
+                    {topLeftTextbox()}
                     <Container className={classes.cardGrid} maxWidth="md">
                         <Grid container spacing={4}>
                             {boardsList(boards)}
@@ -204,7 +239,7 @@ export default function Home() {
                 <div className="right-panel">
                     <div className='right-panel-container'>
                         <div className='users-list'>
-                            {usersList(users)}
+                            {usersList(users, isAdmin)}
                         </div>
                         <RankingBoard rankingBoard={rankingBoard} />
                     </div>
@@ -284,6 +319,39 @@ function UserItem(props) {
         handleClose(e);
     }
 
+    function handleBlockUser(e) {
+        // TODO
+        e.stopPropagation();
+    }
+
+    function userItemActionButton() {
+        const isAdmin = props.isAdmin;
+        if (isAdmin) {
+            return (
+                <button
+                    style={{
+                        width: "4rem",
+                        margin: "5px",
+                        cursor: "pointer"
+                    }}
+                    onClick={handleBlockUser}
+                >Block</button>
+            );
+        }
+        return (
+            <button
+                style={{
+                    width: "4rem",
+                    margin: "5px",
+                    ...(user.username == localStorage.getItem('username') ? { display: "none" } : {}),
+                    cursor: "pointer"
+                }}
+                disabled={!user.isActive}
+                onClick={handleClickOpen}
+            >Invite</button>
+        );
+    }
+
     return (
         <React.Fragment>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
@@ -322,16 +390,7 @@ function UserItem(props) {
                 <div style={{ display: "flex", alignItems: "center" }}><FiberManualRecordIcon style={{ color: statusColor }} /></div>
                 <div style={{ marginLeft: "5px", display: "flex", alignItems: "center" }}>{user.username}</div>
                 <div style={{ flexGrow: 1 }}></div>
-                <button
-                    style={{
-                        width: "4rem",
-                        margin: "5px",
-                        ...(user.username == localStorage.getItem('username') ? { display: "none" } : {}),
-                        cursor: "pointer"
-                    }}
-                    disabled={!user.isActive}
-                    onClick={handleClickOpen}
-                >Invite</button>
+                {userItemActionButton()}
             </div>
         </React.Fragment>
     );

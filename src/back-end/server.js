@@ -48,6 +48,10 @@ app.get('/users', (req, res) => {
     }
     let arr = [];
     users.forEach(user => {
+      // all users, except Admin
+      if (user.username == 'Admin') {
+        return;
+      }
       arr.push({ username: user.username, isActive: false, email: user.email });
       if (activeUsers[user.username]) {
         arr[arr.length - 1].isActive = true;
