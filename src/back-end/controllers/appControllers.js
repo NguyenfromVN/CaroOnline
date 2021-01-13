@@ -83,10 +83,17 @@ exports.validate_user = (req, res) => {
 
 exports.block_user = function (req, res) {
   const { username } = req.query;
-  console.log(username, req.user.username)
   User.blockUser(req.user.username, username, function (err, isBlocked) {
     if (err) return res.send(err);
     res.json(isBlocked);
+  });
+};
+
+exports.search_user = function (req, res) {
+  const { keyword } = req.query;
+  User.searchUser(req.user.username, keyword, function (err, list) {
+    if (err) return res.send(err);
+    res.json(list);
   });
 };
 

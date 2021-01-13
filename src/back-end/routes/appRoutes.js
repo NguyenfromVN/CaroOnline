@@ -47,6 +47,7 @@ module.exports = function (app, passport) {
 
   app.use("/admin", protectedRoutes);
   protectedRoutes.get("/block_user", controller.block_user);
+  protectedRoutes.get("/search_user", controller.search_user);
 
   // user Routes
   app.route("/get_leaderboard").get(controller.get_leaderboard);

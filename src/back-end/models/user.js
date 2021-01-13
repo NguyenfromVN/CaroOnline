@@ -86,7 +86,7 @@ function User() {
         lose: 0,
         trophy: 0,
         draw: 0,
-        block: false
+        block: false,
       },
       function (err, res) {
         if (err) return result(null, err);
@@ -112,7 +112,7 @@ function User() {
     UserModel.find({
       email: email, // search query
     })
-      .then((res) => {        
+      .then((res) => {
         if (res.length !== 0) {
           sendChangePasswordMail(email, res[0].username);
           result(null, {
@@ -216,22 +216,42 @@ function User() {
     };
   };
 
-  this.blockUser = async (username,blockingUser, result) => {
-    if(username !== "Admin"){
-      return result(null, {message: "Not allowed!"})
-    } 
+  this.blockUser = async (username, blockingUser, result) => {
+    if (username !== "Admin") {
+      return result(null, { message: "Not allowed!" });
+    }
     UserModel.updateOne(
       { username: blockingUser },
       {
         block: true,
       },
       function (err, res) {
-        result(null,{
+        result(null, {
           username: blockingUser,
-          block: true
-        })
+          block: true,
+        });
       }
     );
+  };
+
+  this.searchUser = async (username, keyword, result) => {
+    if (username !== "Admin") {
+      return result(null, { message: "Not allowed!" });
+    }
+    UserModel.find({
+      $or: [
+        { username: { $regex: keyword, $options: "i" } },
+        { email: { $regex: keyword, $options: "i" } },
+      ],
+    })
+      .then((res) => {
+        console.log(res, "res");
+        result(null, res);
+      })
+      .catch((err) => {
+        console.log(err, "err");
+        result(null, err);
+      });
   };
 }
 const sendValidatedMail = (email, username) => {
