@@ -50,7 +50,7 @@ function UserBoardItem(props) {
     let boardColor = (user.block) ? "rgb(255, 242, 242)" : "#deffde";
 
     async function viewUser() {
-        console.log("hehehehee");
+        history.push(`/detail?user=${user.username}`);
     }
 
     return (
