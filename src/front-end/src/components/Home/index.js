@@ -82,6 +82,7 @@ export default function Home() {
     const [rankingBoard, setRankingBoard] = useState([]);
     const history = useHistory();
     const [isAdmin, setIsAdmin] = useState(false);
+    const username = localStorage.getItem("username");
 
     useEffect(() => {
         (async () => {
@@ -172,6 +173,16 @@ export default function Home() {
 
     async function handleFindUsersByUsernameOrEmail() {
         // TODO
+        const users = await api.searchUsers(username, searchedBoardIdText);
+        if (users.length > 0) {
+            history.push({
+                pathname: "/searched-users",
+                state: { users: users }
+            });
+        } else {
+            alert('No users matching your keyword. Please try again!');
+            return;
+        }
     }
 
     function topLeftTextbox() {

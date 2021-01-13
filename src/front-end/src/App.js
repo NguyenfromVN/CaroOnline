@@ -15,6 +15,7 @@ import Profile from './components/Profile';
 import Google from './components/Google';
 import ForgotPassword from './components/ForgotPassword';
 import UpdatePassword from './components/UpdatePassword';
+import SearchedUserList from './components/SearchedUserList';
 
 function Copyright() {
     return (
@@ -149,6 +150,7 @@ function App() {
                             <Route path='/google' exact component={() => (<Google handleChangeLoginStatus={handleChangeLoginStatus} />)} />
                             <Route path='/forgot-password' exact component={ForgotPassword} />
                             <Route path='/change-password' exact component={UpdatePassword} />
+                            <Route path='/searched-users' exact component={SearchedUserList} />
                         </Switch>
                     </main>
                     {/* Footer */}
