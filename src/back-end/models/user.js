@@ -1,5 +1,6 @@
 let mongoose = require("mongoose");
 let nodemailer = require("nodemailer");
+const config = require("../config");
 // Tạo schema
 let userSchema = new mongoose.Schema({
   username: String,
@@ -266,7 +267,7 @@ const sendValidatedMail = (email, username) => {
         from: "hpesc1133@gmail.com", // Địa chỉ email của người gửi
         to: email, // Địa chỉ email của người gửi
         subject: "Validate mail", // Tiêu đề mail
-        text: `http://localhost:3000/validate?username=${username}`, // Nội dung mail dạng text
+        text: `${config.FRONTEND_HOST}/validate?username=${username}`, // Nội dung mail dạng text
       };
       //Tiến hành gửi email
       transporter.sendMail(mail, function (error, info) {
@@ -293,7 +294,7 @@ const sendChangePasswordMail = (email, username) => {
         from: "hpesc1133@gmail.com", // Địa chỉ email của người gửi
         to: email, // Địa chỉ email của người gửi
         subject: "Change password mail", // Tiêu đề mail
-        text: `username: ${username} . Link: localhost:3000/change-password?email=${email}`, // Nội dung mail dạng text
+        text: `username: ${username} . Link: ${config.FRONTEND_HOST}/change-password?email=${email}`, // Nội dung mail dạng text
       };
       //Tiến hành gửi email
       transporter.sendMail(mail, function (error, info) {
