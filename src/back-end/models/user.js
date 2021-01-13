@@ -13,6 +13,7 @@ let userSchema = new mongoose.Schema({
   win: Number,
   lose: Number,
   trophy: Number,
+  draw: Number,
 });
 
 // Tạo model
@@ -83,6 +84,7 @@ function User() {
         win: 0,
         lose: 0,
         trophy: 0,
+        draw: 0
       },
       function (err, res) {
         if (err) return result(null, err);
@@ -182,6 +184,33 @@ function User() {
       loser: loserId,
       winnerTrophy: winner.trophy + 1,
       loserTrophy: loser.trophy - 1,
+    };
+  };
+
+  this.setPlayerDraw = async (userId1, userId2, boardId) => {
+    const user1 = await getUser(userId1);
+    const user2 = await getUser(userId2);
+    UserModel.updateOne(
+      { username: userId1 },
+      {
+        draw: user1.draw + 1,
+        history: [...user1.history, { boardId, result: "draw" }],
+      },
+      function (err, res) {}
+    );
+    UserModel.updateOne(
+      { username: userId2 },
+      {
+        draw: user2.draw + 1,
+        history: [...user2.history, { boardId, result: "draw" }],
+      },
+      function (err, res2) {}
+    );
+    return {
+      userId1,
+      userId2,
+      user1draw: user1.draw + 1,
+      user2draw: user2.draw + 1,
     };
   };
 }

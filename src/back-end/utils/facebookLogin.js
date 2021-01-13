@@ -28,6 +28,10 @@ module.exports = function (passport) {
             status: "offline",
             isValidated: true,
             board: "",
+            win: 0,
+            lose: 0,
+            trophy: 0,
+            draw: 0,
           });
           newUser.save((err) => {
             return done(null, newUser);

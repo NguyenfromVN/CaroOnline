@@ -165,6 +165,22 @@ function Board() {
       });
   };
 
+  this.drawGame = async (boardId,result) => {
+    const currentBoard = await getBoard(boardId);
+
+    const final = await User.setPlayerDraw(currentBoard.userId1, currentBoard.userId2);
+
+    BoardModel.updateOne(
+      { boardId },
+      {
+        winner: 'Draw game',
+      },
+      (err, res) => {
+        if (err) return result(null, {message: "error" + err});
+        result(null,  {final});
+      }
+    );
+  };
   this.getBoardChat = async (boardId, result) => {
     const currentBoard = await getBoard(boardId);
     result(null, currentBoard.chat);

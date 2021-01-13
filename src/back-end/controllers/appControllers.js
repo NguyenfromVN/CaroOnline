@@ -131,6 +131,13 @@ exports.surrender = function (req, res) {
   });
 };
 
+exports.draw_game = function (req, res) {
+  const { boardId } = req.query;
+  Board.drawGame(boardId, function (err, board) {
+    if (err) return res.send(err);
+    res.json(board);
+  });
+};
 exports.force_win = function (req, res) {
   const { boardId } = req.query;
   Board.force_win(boardId, req.user.username, function (err, board) {
