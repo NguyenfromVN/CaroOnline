@@ -8,7 +8,7 @@ const ws = (() => {
     // public
     function createConnection(userId, callback) {
         destroyConnection();
-        ws = new WebSocket("ws://caroonlinephan.herokuapp.com?userId=" + userId);
+        ws = new WebSocket("wss://caroonlinephan.herokuapp.com?userId=" + userId);
         ws.addEventListener("message", ({ data: message }) => {
             let topicName = message.split(">>>")[0];
             let msg = message.split(">>>")[1];
