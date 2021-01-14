@@ -5,7 +5,7 @@ const userApi = {
     login: async (username, password) => {
         let response;
         try {
-            response = await axios.post('http://localhost:3001/login', {
+            response = await axios.post('https://caroonlinephan.herokuapp.com/login', {
                 username: username,
                 password: password
             })
@@ -13,6 +13,12 @@ const userApi = {
             response = e.response.data;
         }
         return response;
+        // const url = '/login';
+        // const response = await axiosClient.post(url, {
+        //     username: username,
+        //     password: password
+        // });
+        // return response;
     },
     register: async (email, username, password) => {
         const url = '/register';
@@ -116,7 +122,7 @@ const userApi = {
         return response;
     },
     drawGame: async function (boardId) {
-        const url = "/board/draw_game?boardId="+boardId;
+        const url = "/board/draw_game?boardId=" + boardId;
         const response = await axiosClient.get(url);
         return response;
     },

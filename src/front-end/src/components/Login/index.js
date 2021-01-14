@@ -37,6 +37,7 @@ export default function Login(props) {
     const handleChangeLoginStatus = props.handleChangeLoginStatus;
 
     useEffect(() => {
+        // localStorage.setItem("token", '');
         if (token) { // TODO
             history.push('/');
         }
@@ -124,10 +125,10 @@ export default function Login(props) {
                         </Grid>
                     </Grid>
                     <div className='link'>
-                        <button className='social-button' onClick={() => { window.location.href = 'http://localhost:3001/auth/fb' }}>
+                        <button className='social-button' onClick={() => { window.location.href = 'https://caroonlinephan.herokuapp.com/auth/fb' }}>
                             <img src={facebookImg} className='facebook-login-image' alt='facebook-img'></img>
                         </button>
-                        <button className='social-button' onClick={() => { window.location.href = 'http://localhost:3001/auth/google' }}>
+                        <button className='social-button' onClick={() => { window.location.href = 'https://caroonlinephan.herokuapp.com/auth/google' }}>
                             <img src={googleImg} className='google-login-image' alt='google-img'></img>
                         </button>
                     </div>
